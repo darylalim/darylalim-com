@@ -1,5 +1,6 @@
 ---
 import { NAV_LINKS, SITE_TITLE } from "../consts";
+import ThemeToggle from "./ThemeToggle.astro";
 
 const path = Astro.url.pathname;
 // A section stays current on its child pages (e.g. a post under /blog/)
@@ -11,17 +12,20 @@ const isCurrent = (href: string) =>
   <a class="name" href="/">
     {SITE_TITLE.toLowerCase()}
   </a>
-  <nav aria-label="Main">
-    <ul>
-      {NAV_LINKS.map(({ href, label }) => (
-        <li>
-          <a href={href} aria-current={isCurrent(href) ? "page" : undefined}>
-            {label}
-          </a>
-        </li>
-      ))}
-    </ul>
-  </nav>
+  <div class="controls">
+    <nav aria-label="Main">
+      <ul>
+        {NAV_LINKS.map(({ href, label }) => (
+          <li>
+            <a href={href} aria-current={isCurrent(href) ? "page" : undefined}>
+              {label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+    <ThemeToggle />
+  </div>
 </header>
 
 <style>
@@ -43,6 +47,11 @@ const isCurrent = (href: string) =>
   }
   .name {
     font-weight: var(--font-weight-bold);
+  }
+  .controls {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
   }
   ul {
     display: flex;
