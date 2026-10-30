@@ -12,6 +12,7 @@ A personal developer-portfolio site built with **Astro** as a fully static site,
 | Deploys | Workers Builds connected to GitHub | Push to `main` deploys; PRs get preview URLs |
 | Content | Content collections (Markdown/MDX + YAML) | Typed frontmatter; new post = new file |
 | Design | Developer-portfolio | Monospace accents, project cards, good code styling |
+| Fonts | IBM Plex Sans + IBM Plex Mono, self-hosted | Chosen over Geist on a comparison page (PR #7): more distinctive mono for headings, warmer body text, not the default Vercel/Next.js look |
 | Sections | Home/About, Blog, Projects, Resume/CV | — |
 | Email | `hello@darylalim.com` via Cloudflare Email Routing | Keeps the personal inbox off the public site. Receive-only: replies go out from Gmail for now |
 | URLs | `trailingSlash: "always"` | Matches Astro's `directory` build output and Workers' default `html_handling`; no redirect hops or duplicate URLs |
@@ -129,10 +130,13 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Tooling note:** macOS's built-in `curl` (LibreSSL 3.3.6) fails the TLS handshake with `*.workers.dev`. Use Node's `fetch` or a Homebrew `curl` to test deployed URLs
 
 ### Phase 2: Layout & design system ← next
-- Start with a font comparison: the same page in IBM Plex and in Geist, both self-hosted, so Daryl can choose on a real page
+- ~~Start with a font comparison~~ **Done 2026-10-30 (PR #7): IBM Plex chosen.** Configured through Astro's Fonts API as `--font-sans` and `--font-mono`
+  - `local` provider pointed at the `@fontsource` package files, Latin subset only. The `npm` provider fails the build: its fallback-metrics step `fetch()`es `file://` URLs
+  - Plex Sans is variable (one file); Plex Mono has no variable version, so only 400 and 600 are loaded. Add a weight to the config before using it in CSS
+  - `<Font cssVariable="--font-sans" preload />` (and `--font-mono`) go in `BaseLayout`'s `<head>`
 - `BaseLayout` with `<head>` SEO props (title, description, canonical, Open Graph, Twitter)
 - Design tokens in CSS custom properties: color, spacing, type scale
-- Typography: a sans + mono pair from one family (IBM Plex Sans/Mono or Geist/Geist Mono), self-hosted (no third-party requests); mono for headings, nav, tags and dates
+- Typography: IBM Plex Sans + IBM Plex Mono, self-hosted (no third-party requests); mono for headings, nav, tags and dates
 - A single accent color, chosen in this phase against real pages
 - Light/dark theme following `prefers-color-scheme`, plus a toggle (small `is:inline` script in `<head>` to avoid a flash of the wrong theme; it needs a manual CSP hash, see Phase 6)
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
@@ -239,7 +243,7 @@ The About section expands on the three themes above, one short paragraph each.
 ## Pending from Daryl
 - [x] LinkedIn URL
 - [x] Approve the 6 featured projects
-- [ ] Font pairing: IBM Plex or Geist (first decision in Phase 2, made on the comparison page)
+- [x] Font pairing: IBM Plex (chosen 2026-10-30 on the comparison page)
 - [x] Bio one-liner (option B)
 - [ ] Photo (optional; launch without one if needed)
 - [ ] Topic for the first blog post (suggested: "Why I build AI that runs on your own machine")
