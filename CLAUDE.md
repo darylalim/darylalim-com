@@ -33,5 +33,5 @@ Content collections arrive in Phase 3 (`src/content.config.ts`, schemas in `PLAN
 
 - Work on a branch and merge to `main` through a PR. Never push straight to `main`.
 - Workers Builds deploys `main` to production and builds every other branch as a preview; the preview URL is posted on the PR.
-- Build command `npm run build`, deploy command `npx wrangler deploy`, preview command `npx wrangler preview` (the default). The Worker name in the dashboard must match `"name"` in `wrangler.jsonc` (`darylalim-com`).
+- Build command `npm run build`, deploy command `npx wrangler deploy`, preview command `npx wrangler preview` (the default). `wrangler preview` fails without the `previews` block in `wrangler.jsonc`; keep it, even empty. The Worker name in the dashboard must match `"name"` in `wrangler.jsonc` (`darylalim-com`).
 - **Rollback:** `npx wrangler rollback` (pick the previous version), or the Worker's Deployments tab in the dashboard. Then fix forward with a PR.
