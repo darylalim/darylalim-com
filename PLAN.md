@@ -145,6 +145,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
 - Shiki code highlighting with themes matched to light/dark (uses inline `style` attributes, so CSP needs an attribute-only allowance; see Phase 6)
 - Header nav (Home, Blog, Projects, Resume) and footer (GitHub, LinkedIn, email, RSS)
+  - **Done (PR #10).** `Header.astro` and `Footer.astro`, rendered by `BaseLayout` around `<main id="main">` with a skip link. Links live in `src/consts.ts`. GitHub and LinkedIn get `rel="me"`. Blog, Projects, Resume and RSS 404 until Phases 3–4
+  - **Email is left out until Phase 5:** `hello@` has no MX record yet, so mail to it would bounce. Add it to `FOOTER_LINKS` once Email Routing works
 - **Done when:** the layout is responsive at mobile and desktop widths and passes basic accessibility checks (contrast, focus states, landmarks)
 
 ### Phase 3: Pages & content
