@@ -135,6 +135,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
   - Plex Sans is variable (one file); Plex Mono has no variable version, so only 400 and 600 are loaded. Add a weight to the config before using it in CSS
   - `<Font cssVariable="--font-sans" preload />` (and `--font-mono`) go in `BaseLayout`'s `<head>`
 - `BaseLayout` with `<head>` SEO props (title, description, canonical, Open Graph, Twitter)
+  - **Done (PR #8).** `src/layouts/BaseLayout.astro`, with site name and description in `src/consts.ts`. `og:image` and `summary_large_image` are only emitted when an `image` is passed; make `/og-default.png` the default once it exists
 - Design tokens in CSS custom properties: color, spacing, type scale
 - Typography: IBM Plex Sans + IBM Plex Mono, self-hosted (no third-party requests); mono for headings, nav, tags and dates
 - A single accent color, chosen in this phase against real pages

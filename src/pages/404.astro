@@ -1,18 +1,16 @@
 ---
+import BaseLayout from "../layouts/BaseLayout.astro";
 ---
 
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width" />
-    <meta name="robots" content="noindex" />
-    <title>Page not found · Daryl Lim</title>
-  </head>
-  <body>
+<BaseLayout
+  title="Page not found"
+  description="This page doesn't exist."
+  noindex
+>
+  <main>
     <h1>Page not found</h1>
     <p>
       <a href="/">Back to home</a>
     </p>
-  </body>
-</html>
+  </main>
+</BaseLayout>

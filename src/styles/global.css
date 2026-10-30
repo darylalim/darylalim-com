@@ -1,0 +1,12 @@
+/* Design tokens (color, spacing, type scale) arrive in the next Phase 2 step. */
+
+body {
+  font-family: var(--font-sans);
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: var(--font-mono);
+}
