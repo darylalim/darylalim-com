@@ -1,0 +1,78 @@
+<!doctype html>
+<!--
+  Source for public/og-default.png (1200×630), the default Open Graph image.
+  Colors match the dark tokens in src/styles/global.css; fonts are the
+  self-hosted IBM Plex Mono files. After editing, regenerate with:
+
+    npm run og
+-->
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      @font-face {
+        font-family: "Plex Mono";
+        font-weight: 400;
+        src: url("../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-400-normal.woff2");
+      }
+      @font-face {
+        font-family: "Plex Mono";
+        font-weight: 600;
+        src: url("../node_modules/@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2");
+      }
+      html,
+      body {
+        margin: 0;
+        width: 1200px;
+        height: 630px;
+        overflow: hidden;
+      }
+      body {
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        padding: 72px 88px;
+        background: #121214;
+        color: #ececee;
+        border-top: 12px solid #4fd1c0;
+      }
+      .name {
+        font-family: "Plex Mono", monospace;
+        font-weight: 600;
+        font-size: 34px;
+        letter-spacing: -0.01em;
+      }
+      h1 {
+        margin: 0;
+        font-family: "Plex Mono", monospace;
+        font-weight: 600;
+        font-size: 58px;
+        line-height: 1.2;
+        letter-spacing: -0.02em;
+      }
+      h1 em {
+        font-style: normal;
+        color: #4fd1c0;
+      }
+      .footer {
+        display: flex;
+        justify-content: space-between;
+        font-family: "Plex Mono", monospace;
+        font-size: 26px;
+        color: #a1a1a8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="name">daryl lim</div>
+    <h1>
+      I build AI that runs on <em>your own machine</em>, and agents that show
+      their work.
+    </h1>
+    <div class="footer">
+      <span>darylalim.com</span>
+      <span>on-device ai · agents · healthcare</span>
+    </div>
+  </body>
+</html>
