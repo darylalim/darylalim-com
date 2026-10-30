@@ -136,7 +136,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
   - Plex Sans is variable (one file); Plex Mono has no variable version, so only 400 and 600 are loaded. Add a weight to the config before using it in CSS
   - `<Font cssVariable="--font-sans" preload />` (and `--font-mono`) go in `BaseLayout`'s `<head>`
 - `BaseLayout` with `<head>` SEO props (title, description, canonical, Open Graph, Twitter)
-  - **Done (PR #8).** `src/layouts/BaseLayout.astro`, with site name and description in `src/consts.ts`. `og:image` and `summary_large_image` are only emitted when an `image` is passed; make `/og-default.png` the default once it exists
+  - **Done (PR #8).** `src/layouts/BaseLayout.astro`, with site name and description in `src/consts.ts`. `image` defaults to `/og-default.png` (PR #14), with width, height and alt tags
 - Design tokens in CSS custom properties: color, spacing, type scale
   - **Done (PR #9).** In `src/styles/global.css`. Colors use `light-dark()`, so each token holds both themes and the toggle only sets `data-theme` on `<html>`. Every text color passes WCAG AA on `bg` and `surface` in both themes
 - Typography: IBM Plex Sans + IBM Plex Mono, self-hosted (no third-party requests); mono for headings, nav, tags and dates
@@ -145,6 +145,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - Light/dark theme following `prefers-color-scheme`, plus a toggle (small `is:inline` script in `<head>` to avoid a flash of the wrong theme; it needs a manual CSP hash, see Phase 6)
   - **Done (PR #12).** `ThemeToggle.astro` in the header and an `is:inline` script in `BaseLayout`'s `<head>`. A choice is stored in `localStorage` only when it differs from the system setting, so toggling back means "follow the system" again. The button stays hidden without JS. The click handler is a normal Astro script, so CSP hashes it automatically; only the `<head>` script needs the manual hash
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
+  - **Done (PR #14).** The source is `scripts/og-default.html` (dark tokens, Plex Mono, teal top bar). `npm run og` renders it with headless Chrome. Regenerate after changing the one-liner or the palette
+  - `og:image` is an absolute `https://darylalim.com/...` URL (from `site`), so link previews only show it once the domain is live in Phase 5
 - Shiki code highlighting with themes matched to light/dark (uses inline `style` attributes, so CSP needs an attribute-only allowance; see Phase 6)
   - **Done (PR #13).** `github-light-default` / `github-dark-default` with `defaultColor: "light-dark()"`, so tokens follow the theme toggle with no extra CSS. Chosen for contrast: of six pairs tested on `--color-surface`, it had the fewest failures (one)
   - A transformer in `astro.config.mjs` drops the theme background (code blocks use `--color-surface`) and darkens the light comment gray `#6e7781` → `#59636e` (4.09 → 5.50:1)
