@@ -156,14 +156,23 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
    - Existing MX records will clash with Email Routing; decide whether anything currently receives mail there
+   - **Checked 2026-10-30 (read-only, via the Cloudflare MCP server): passed.** Zone active on the Free plan with Cloudflare nameservers; no DNS records at all (no A/AAAA/CNAME/MX), Email Routing unconfigured, no Worker custom domains. Re-check only if records are added before Phase 5
 2. Add the custom domain in `wrangler.jsonc` and merge:
    ```jsonc
    "routes": [{ "pattern": "darylalim.com", "custom_domain": true }]
    ```
 3. `www.darylalim.com` → `darylalim.com`: proxied DNS record for `www` (e.g. `AAAA 100::`) + a Cloudflare Redirect Rule (301, keep path and query)
-4. Zone settings:
-   - Off: Auto Minify (if still present), Rocket Loader, Email Address Obfuscation. They rewrite HTML or inject scripts, which the CSP blocks without any visible error
-   - On: Always Use HTTPS, HSTS (start with a short `max-age`, raise it once everything is confirmed on HTTPS)
+4. Zone settings (current values from the 2026-10-30 check → target):
+   | Setting | Now | Target | Why |
+   | --- | --- | --- | --- |
+   | Email Address Obfuscation | on | **off** | Injects a decode script the CSP blocks, breaking the `hello@` link |
+   | Rocket Loader | off | off | Rewrites script loading; already correct |
+   | Auto Minify | — | off (if still present) | Can break hydration |
+   | Always Use HTTPS | off | **on** | Redirect all HTTP to HTTPS |
+   | HSTS | off | **on** | Start with a short `max-age`, raise it once everything is confirmed on HTTPS |
+   | Minimum TLS version | 1.0 | **1.2** | TLS 1.0/1.1 are deprecated; no current browser needs them |
+   | SSL/TLS mode | Full | Full | Fine for Workers custom domains |
+   - Changing these needs a Cloudflare MCP session with write access (**[Daryl]** re-authorize with a broader scope than "Read only"), or the dashboard
 5. Email Routing: enable it on the zone, **[Daryl]** verify the destination inbox, and create `hello@darylalim.com` → personal inbox (Cloudflare adds the MX/SPF records)
 6. Rollback: a bad deploy is reverted with `npx wrangler rollback` (or from the Worker's Deployments tab); document this in `CLAUDE.md`
 - **Done when:** https://darylalim.com serves the site, `www` redirects with the path preserved, HTTP redirects to HTTPS, and a test email to `hello@` arrives
