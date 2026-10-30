@@ -16,8 +16,8 @@
   --color-border: light-dark(#e2e2de, #2d2d32);
   --color-text: light-dark(#1c1c1e, #ececee);
   --color-text-muted: light-dark(#5e5e63, #a1a1a8);
-  /* Provisional: the accent is chosen against real pages once the header and footer exist */
-  --color-accent: light-dark(#1f5fd1, #7aa7ff);
+  /* Teal, chosen in Phase 2 over blue, amber and violet (PR #11) */
+  --color-accent: light-dark(#0d7068, #4fd1c0);
 
   /* Type */
   --font-size-xs: 0.8125rem;
