@@ -11,12 +11,41 @@ import sitemap from "@astrojs/sitemap";
 const local = fontProviders.local();
 const file = (/** @type {string} */ path) => `./node_modules/${path}`;
 
+/**
+ * Code blocks take their background from the site (--color-surface, in global.css)
+ * instead of the theme, and github-light-default's comment gray (#6e7781, 4.09:1 on
+ * that surface) is darkened to #59636e (5.50:1) to pass WCAG AA.
+ * @type {import("shiki").ShikiTransformer}
+ */
+const fitCodeToSite = {
+  name: "fit-code-to-site",
+  pre(node) {
+    const style = String(node.properties.style ?? "");
+    node.properties.style = style.replace(/background-color:[^;]*;?/, "");
+  },
+  span(node) {
+    const style = node.properties.style;
+    if (typeof style === "string") {
+      node.properties.style = style.replace(/#6e7781/gi, "#59636e");
+    }
+  },
+};
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://darylalim.com",
   // Matches the directory-style build output and Workers' default html_handling
   trailingSlash: "always",
   integrations: [mdx(), sitemap()],
+  markdown: {
+    shikiConfig: {
+      // Every token gets color: light-dark(<light>, <dark>), so code blocks follow
+      // the same color-scheme switch as the rest of the site (and the theme toggle)
+      themes: { light: "github-light-default", dark: "github-dark-default" },
+      defaultColor: "light-dark()",
+      transformers: [fitCodeToSite],
+    },
+  },
   // IBM Plex Sans + Mono, chosen in Phase 2 on a side-by-side comparison with Geist
   fonts: [
     {
