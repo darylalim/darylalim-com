@@ -1,0 +1,83 @@
+---
+// Switches between light and dark. A choice is only stored when it differs
+// from the system setting, so switching back means "follow the system" again.
+// Hidden until the script runs, so visitors without JS don't get a dead button.
+---
+
+<button
+  class="theme-toggle"
+  type="button"
+  aria-label="Dark theme"
+  aria-pressed="false"
+  hidden
+>
+  <svg viewBox="0 0 20 20" width="18" height="18" aria-hidden="true">
+    <circle
+      cx="10"
+      cy="10"
+      r="8"
+      fill="none"
+      stroke="currentColor"
+      stroke-width="1.5"
+    ></circle>
+    <path d="M10 2a8 8 0 0 1 0 16z" fill="currentColor"></path>
+  </svg>
+</button>
+
+<script>
+  const button = document.querySelector<HTMLButtonElement>(".theme-toggle");
+  const root = document.documentElement;
+  const systemDark = matchMedia("(prefers-color-scheme: dark)");
+
+  const systemTheme = () => (systemDark.matches ? "dark" : "light");
+  const currentTheme = () => root.dataset.theme ?? systemTheme();
+  const sync = () =>
+    button?.setAttribute("aria-pressed", String(currentTheme() === "dark"));
+
+  // localStorage throws when storage is blocked; the toggle still works for the page
+  const store = (theme: string | null) => {
+    try {
+      if (theme) localStorage.setItem("theme", theme);
+      else localStorage.removeItem("theme");
+    } catch {}
+  };
+
+  if (button) {
+    button.hidden = false;
+    sync();
+    button.addEventListener("click", () => {
+      const next = currentTheme() === "dark" ? "light" : "dark";
+      if (next === systemTheme()) {
+        delete root.dataset.theme;
+        store(null);
+      } else {
+        root.dataset.theme = next;
+        store(next);
+      }
+      sync();
+    });
+    systemDark.addEventListener("change", sync);
+  }
+</script>
+
+<style>
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    width: 2rem;
+    height: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    background: none;
+    cursor: pointer;
+  }
+  .theme-toggle[hidden] {
+    display: none;
+  }
+  .theme-toggle:hover {
+    color: var(--color-text);
+    background: var(--color-surface);
+  }
+</style>

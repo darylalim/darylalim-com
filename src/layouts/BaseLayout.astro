@@ -33,6 +33,17 @@ const imageUrl = image && new URL(image, Astro.site);
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {/* Applies a stored theme before first paint, so the page never flashes the
+        wrong theme. is:inline keeps it unbundled and render-blocking; the CSP
+        (Phase 6) needs its hash, so update that whenever this script changes. */}
+    <script is:inline>
+      try {
+        const theme = localStorage.getItem("theme");
+        if (theme === "light" || theme === "dark") {
+          document.documentElement.dataset.theme = theme;
+        }
+      } catch {}
+    </script>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="32x32" />
     <meta name="generator" content={Astro.generator} />

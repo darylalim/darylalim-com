@@ -143,6 +143,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - A single accent color, chosen in this phase against real pages
   - **Done 2026-10-30 (PR #11): teal**, `#0d7068` light and `#4fd1c0` dark (5.34:1 and 9.18:1 at worst). Chosen over blue, amber and violet on a comparison page: calm and clinical, fits on-device and healthcare work, not the default link blue or the usual AI violet
 - Light/dark theme following `prefers-color-scheme`, plus a toggle (small `is:inline` script in `<head>` to avoid a flash of the wrong theme; it needs a manual CSP hash, see Phase 6)
+  - **Done (PR #12).** `ThemeToggle.astro` in the header and an `is:inline` script in `BaseLayout`'s `<head>`. A choice is stored in `localStorage` only when it differs from the system setting, so toggling back means "follow the system" again. The button stays hidden without JS. The click handler is a normal Astro script, so CSP hashes it automatically; only the `<head>` script needs the manual hash
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
 - Shiki code highlighting with themes matched to light/dark (uses inline `style` attributes, so CSP needs an attribute-only allowance; see Phase 6)
 - Header nav (Home, Blog, Projects, Resume) and footer (GitHub, LinkedIn, email, RSS)
