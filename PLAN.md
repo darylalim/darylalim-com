@@ -146,6 +146,9 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
   - **Done (PR #12).** `ThemeToggle.astro` in the header and an `is:inline` script in `BaseLayout`'s `<head>`. A choice is stored in `localStorage` only when it differs from the system setting, so toggling back means "follow the system" again. The button stays hidden without JS. The click handler is a normal Astro script, so CSP hashes it automatically; only the `<head>` script needs the manual hash
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
 - Shiki code highlighting with themes matched to light/dark (uses inline `style` attributes, so CSP needs an attribute-only allowance; see Phase 6)
+  - **Done (PR #13).** `github-light-default` / `github-dark-default` with `defaultColor: "light-dark()"`, so tokens follow the theme toggle with no extra CSS. Chosen for contrast: of six pairs tested on `--color-surface`, it had the fewest failures (one)
+  - A transformer in `astro.config.mjs` drops the theme background (code blocks use `--color-surface`) and darkens the light comment gray `#6e7781` → `#59636e` (4.09 → 5.50:1)
+  - Applies to Markdown/MDX code fences. The `<Code />` component doesn't read `shikiConfig`; pass the same `themes`, `defaultColor` and `transformers` if it's ever used
 - Header nav (Home, Blog, Projects, Resume) and footer (GitHub, LinkedIn, email, RSS)
   - **Done (PR #10).** `Header.astro` and `Footer.astro`, rendered by `BaseLayout` around `<main id="main">` with a skip link. Links live in `src/consts.ts`. GitHub and LinkedIn get `rel="me"`. Blog, Projects, Resume and RSS 404 until Phases 3–4
   - **Email is left out until Phase 5:** `hello@` has no MX record yet, so mail to it would bounce. Add it to `FOOTER_LINKS` once Email Routing works
