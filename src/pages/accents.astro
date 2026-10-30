@@ -1,0 +1,116 @@
+---
+// Temporary: compares candidate accent colors in both themes on the real
+// header, link and focus styles. Delete once an accent is chosen.
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const accents = [
+  { name: "Blue", light: "#1f5fd1", dark: "#7aa7ff" },
+  { name: "Teal", light: "#0d7068", dark: "#4fd1c0" },
+  { name: "Amber", light: "#a8530a", dark: "#f5a524" },
+  { name: "Violet", light: "#6b3fd4", dark: "#b5a1ff" },
+];
+const schemes = ["light", "dark"] as const;
+---
+
+<BaseLayout title="Accent comparison" noindex>
+  <h1>Accent comparison</h1>
+  <p>
+    Each panel uses the site's real tokens, with only the accent swapped. The
+    focused link shows the keyboard focus ring.
+  </p>
+
+  {accents.map((accent) => (
+    <section>
+      <h2>
+        {accent.name} <code>{accent.light}</code> / <code>{accent.dark}</code>
+      </h2>
+      <div class="pair">
+        {schemes.map((scheme) => (
+          <div
+            class="panel"
+            style={`color-scheme: ${scheme}; --color-accent: ${accent[scheme]}`}
+          >
+            <div class="nav">
+              <span class="name">daryl lim</span>
+              <span class="current">home</span>
+              <span>blog</span>
+              <span>projects</span>
+            </div>
+            <h3>Agents that show their work</h3>
+            <p>
+              Every figure comes from a <a href="#">deterministic tool</a>,
+              never the model. Read the <a href="#">write-up</a>.
+            </p>
+            <p class="meta">
+              <time>2026-11-12</time>
+              <span class="tag">agents</span>
+              <a href="#" class="focused">
+                focused link
+              </a>
+            </p>
+          </div>
+        ))}
+      </div>
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  .pair {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: var(--space-3);
+  }
+  .panel {
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text);
+    background: var(--color-bg);
+  }
+  .panel a {
+    color: var(--color-accent);
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-4);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .name {
+    margin-right: auto;
+    color: var(--color-text);
+    font-weight: var(--font-weight-bold);
+  }
+  .current {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.2em;
+  }
+  h3 {
+    margin-top: var(--space-4);
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-3);
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-text-muted);
+  }
+  .tag {
+    padding: 0.125rem var(--space-2);
+    border-radius: 999px;
+    background: var(--color-surface);
+  }
+  .focused {
+    outline: 2px solid var(--color-accent);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+</style>
