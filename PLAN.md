@@ -130,7 +130,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Known quirk:** Worker Previews (open beta) return a plain-text `Not found` for unknown URLs instead of the custom `404.html`. Production serves the custom page correctly. It's a platform limitation, not a site bug; check 404 behaviour on production or with `npm run preview`
 - **Tooling note:** macOS's built-in `curl` (LibreSSL 3.3.6) fails the TLS handshake with `*.workers.dev`. Use Node's `fetch` or a Homebrew `curl` to test deployed URLs
 
-### Phase 2: Layout & design system ← next
+### Phase 2: Layout & design system ✅
+**Done 2026-10-30** (PRs #7–#15). Lighthouse on `npm run preview`: home scores 100 in performance, accessibility, best practices and SEO on mobile and desktop; the 404 page scores 100 in accessibility and best practices.
 - ~~Start with a font comparison~~ **Done 2026-10-30 (PR #7): IBM Plex chosen.** Configured through Astro's Fonts API as `--font-sans` and `--font-mono`
   - `local` provider pointed at the `@fontsource` package files, Latin subset only. The `npm` provider fails the build: its fallback-metrics step `fetch()`es `file://` URLs
   - Plex Sans is variable (one file); Plex Mono has no variable version, so only 400 and 600 are loaded. Add a weight to the config before using it in CSS
@@ -155,8 +156,12 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
   - **Done (PR #10).** `Header.astro` and `Footer.astro`, rendered by `BaseLayout` around `<main id="main">` with a skip link. Links live in `src/consts.ts`. GitHub and LinkedIn get `rel="me"`. Blog, Projects, Resume and RSS 404 until Phases 3–4
   - **Email is left out until Phase 5:** `hello@` has no MX record yet, so mail to it would bounce. Add it to `FOOTER_LINKS` once Email Routing works
 - **Done when:** the layout is responsive at mobile and desktop widths and passes basic accessibility checks (contrast, focus states, landmarks)
+- Favicon: a teal `dl` monogram on the dark surface, drawn as SVG shapes because favicons can't load web fonts. `favicon.ico` is a 32×32 PNG rendered from it (PR #15)
+- **Findings:**
+  - Lighthouse won't audit a URL that returns 404 (`ERRORED_DOCUMENT_REQUEST`). Audit the 404 page at `/404`, which Workers serves with status 200; unknown URLs correctly return 404 with the same page
+  - The one remaining Lighthouse note is the render-blocking stylesheet (~140 ms estimated on throttled mobile). Revisit in Phase 6: `build.inlineStylesheets: "always"` removes it, and the CSP hashes inline styles anyway
 
-### Phase 3: Pages & content
+### Phase 3: Pages & content ← next
 - **Home/About**: short intro (see Content below), optional photo (monogram until then), featured projects (`featured: true`), latest 3 posts
 - **Blog**: index sorted by date, post pages with reading time, tag pages, previous/next links
 - **Projects**: card grid grouped or filtered by `theme` (title, description, tech tags, links); detail pages for longer write-ups; "More on GitHub" link to the full repo list
