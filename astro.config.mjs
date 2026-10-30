@@ -17,13 +17,12 @@ export default defineConfig({
   // Matches the directory-style build output and Workers' default html_handling
   trailingSlash: "always",
   integrations: [mdx(), sitemap()],
-  // Temporary: both candidate families for the Phase 2 font comparison.
-  // Remove the losing pair (config and package) once one is chosen.
+  // IBM Plex Sans + Mono, chosen in Phase 2 on a side-by-side comparison with Geist
   fonts: [
     {
       provider: local,
       name: "IBM Plex Sans",
-      cssVariable: "--font-plex-sans",
+      cssVariable: "--font-sans",
       options: {
         variants: [
           {
@@ -41,7 +40,7 @@ export default defineConfig({
     {
       provider: local,
       name: "IBM Plex Mono",
-      cssVariable: "--font-plex-mono",
+      cssVariable: "--font-mono",
       fallbacks: ["monospace"],
       options: {
         // Plex Mono has no variable version, so each weight is its own file
@@ -61,43 +60,6 @@ export default defineConfig({
             src: [
               file(
                 "@fontsource/ibm-plex-mono/files/ibm-plex-mono-latin-600-normal.woff2",
-              ),
-            ],
-          },
-        ],
-      },
-    },
-    {
-      provider: local,
-      name: "Geist",
-      cssVariable: "--font-geist-sans",
-      options: {
-        variants: [
-          {
-            weight: "100 900",
-            style: "normal",
-            src: [
-              file(
-                "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2",
-              ),
-            ],
-          },
-        ],
-      },
-    },
-    {
-      provider: local,
-      name: "Geist Mono",
-      cssVariable: "--font-geist-mono",
-      fallbacks: ["monospace"],
-      options: {
-        variants: [
-          {
-            weight: "100 900",
-            style: "normal",
-            src: [
-              file(
-                "@fontsource-variable/geist-mono/files/geist-mono-latin-wght-normal.woff2",
               ),
             ],
           },
