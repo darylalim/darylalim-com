@@ -137,8 +137,10 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - `BaseLayout` with `<head>` SEO props (title, description, canonical, Open Graph, Twitter)
   - **Done (PR #8).** `src/layouts/BaseLayout.astro`, with site name and description in `src/consts.ts`. `og:image` and `summary_large_image` are only emitted when an `image` is passed; make `/og-default.png` the default once it exists
 - Design tokens in CSS custom properties: color, spacing, type scale
+  - **Done (PR #9).** In `src/styles/global.css`. Colors use `light-dark()`, so each token holds both themes and the toggle only sets `data-theme` on `<html>`. Every text color passes WCAG AA on `bg` and `surface` in both themes
 - Typography: IBM Plex Sans + IBM Plex Mono, self-hosted (no third-party requests); mono for headings, nav, tags and dates
 - A single accent color, chosen in this phase against real pages
+  - A provisional blue (`--color-accent`) is in place. Choose the real one after the header and footer exist, so it's judged on links, nav and focus rings together
 - Light/dark theme following `prefers-color-scheme`, plus a toggle (small `is:inline` script in `<head>` to avoid a flash of the wrong theme; it needs a manual CSP hash, see Phase 6)
 - Default OG image (`public/og-default.png`, 1200×630) in the site's type and colors
 - Shiki code highlighting with themes matched to light/dark (uses inline `style` attributes, so CSP needs an attribute-only allowance; see Phase 6)
