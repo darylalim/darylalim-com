@@ -34,4 +34,7 @@ Content collections arrive in Phase 3 (`src/content.config.ts`, schemas in `PLAN
 - Work on a branch and merge to `main` through a PR. Never push straight to `main`.
 - Workers Builds deploys `main` to production and builds every other branch as a preview; the preview URL is posted on the PR.
 - Build command `npm run build`, deploy command `npx wrangler deploy`, preview command `npx wrangler preview` (the default). `wrangler preview` fails without the `previews` block in `wrangler.jsonc`; keep it, even empty. The Worker name in the dashboard must match `"name"` in `wrangler.jsonc` (`darylalim-com`).
+- Production: https://darylalim-com.daryl-a-lim.workers.dev (until the custom domain in Phase 5). Branch previews: `https://<branch-slug>-darylalim-com.daryl-a-lim.workers.dev`.
+- Previews (open beta) return a plain `Not found` for unknown URLs instead of `404.html`; production is correct. Not a site bug.
+- To test deployed URLs, use Node's `fetch`, not macOS's built-in `curl` (its LibreSSL fails the TLS handshake with `*.workers.dev`).
 - **Rollback:** `npx wrangler rollback` (pick the previous version), or the Worker's Deployments tab in the dashboard. Then fix forward with a PR.

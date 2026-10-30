@@ -85,7 +85,9 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 
 ## Phases
 
-### Phase 1: Scaffold
+### Phase 1: Scaffold ✅
+**Done 2026-10-30** (PRs #2, #4, #5). Production is live at https://darylalim-com.daryl-a-lim.workers.dev, and PRs get preview URLs. Astro 7.4.4, Wrangler 4.156.0.
+
 - `npm create astro@latest`: minimal template, TypeScript strict
 - Add integrations: `@astrojs/mdx`, `@astrojs/sitemap`, `@astrojs/rss`
 - Dev dependencies: `@astrojs/check` and `typescript` (required by `astro check`, which runs in `build`), `wrangler`, `prettier`, `prettier-plugin-astro`
@@ -99,15 +101,20 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
     "assets": {
       "directory": "./dist",
       "not_found_handling": "404-page"
-    }
+    },
+    "previews": {}
   }
   ```
+  - `previews` is required by `npx wrangler preview`, the Workers Builds preview command; without it every PR build fails. It stays empty because previews need no separate settings
 - Scripts: `dev` (astro dev), `build` (astro check && astro build), `preview` (astro build && wrangler dev), `deploy` (astro build && wrangler deploy), `format` (prettier --write .)
 - Repo hygiene:
   - Pin Node: `.nvmrc` plus `"engines"` in `package.json` (current LTS that meets Astro's minimum)
+    - Major version only (`24`): Workers Builds then uses the Node 24 it has preinstalled; an exact pin would download Node on every build
+  - Install scripts: npm 11.19+ blocks dependency install scripts by default. `esbuild`, `fsevents` and `workerd` are approved by name in `allowScripts` (not pinned to a version, so Dependabot updates keep working)
   - `.gitignore`: `node_modules/`, `dist/`, `.astro/`, `.wrangler/`, `.dev.vars`
-  - Prettier with `prettier-plugin-astro`
-  - `.github/dependabot.yml`: weekly npm updates (each PR gets a Workers Builds preview)
+  - Prettier with `prettier-plugin-astro` (`PLAN.md` is excluded, so its tables stay hand-formatted)
+  - `.github/dependabot.yml`: weekly npm updates (each PR gets a Workers Builds preview), Astro packages grouped
+    - TypeScript major updates are ignored: `@astrojs/check` supports TypeScript `^5 || ^6` only. Remove the rule once it accepts 7
   - `CLAUDE.md`: commands, content schemas, how to add a post or project, deploy and rollback steps
 - First deploy (proves the pipeline on day one, before any design work):
   - **[Daryl]** Log in to Cloudflare (dashboard, and the Cloudflare MCP server in Claude Code)
@@ -115,11 +122,14 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
     - **[Daryl]** Authorize the Cloudflare GitHub app for the `darylalim-com` repo
     - Build command: `npm run build`; deploy command: `npx wrangler deploy`
     - The Worker name in the dashboard must match `"name"` in `wrangler.jsonc`
-  - Enable builds for non-production branches, so every PR gets a preview URL
+  - Enable builds for non-production branches, so every PR gets a preview URL (preview command: `npx wrangler preview`, the default)
   - From here on, work happens on branches and merges to `main` through PRs
 - **Done when:** `npm run preview` works locally, the starter is live on `darylalim-com.<account>.workers.dev`, and a test PR gets its own preview URL
+- **Known quirk:** Worker Previews (open beta) return a plain-text `Not found` for unknown URLs instead of the custom `404.html`. Production serves the custom page correctly. It's a platform limitation, not a site bug; check 404 behaviour on production or with `npm run preview`
+- **Tooling note:** macOS's built-in `curl` (LibreSSL 3.3.6) fails the TLS handshake with `*.workers.dev`. Use Node's `fetch` or a Homebrew `curl` to test deployed URLs
 
-### Phase 2: Layout & design system
+### Phase 2: Layout & design system ← next
+- Start with a font comparison: the same page in IBM Plex and in Geist, both self-hosted, so Daryl can choose on a real page
 - `BaseLayout` with `<head>` SEO props (title, description, canonical, Open Graph, Twitter)
 - Design tokens in CSS custom properties: color, spacing, type scale
 - Typography: a sans + mono pair from one family (IBM Plex Sans/Mono or Geist/Geist Mono), self-hosted (no third-party requests); mono for headings, nav, tags and dates
@@ -229,8 +239,8 @@ The About section expands on the three themes above, one short paragraph each.
 ## Pending from Daryl
 - [x] LinkedIn URL
 - [x] Approve the 6 featured projects
-- [ ] Font pairing: IBM Plex or Geist (decide in Phase 2 by comparing on real pages)
+- [ ] Font pairing: IBM Plex or Geist (first decision in Phase 2, made on the comparison page)
 - [x] Bio one-liner (option B)
 - [ ] Photo (optional; launch without one if needed)
 - [ ] Topic for the first blog post (suggested: "Why I build AI that runs on your own machine")
-- [ ] Resume content for `experience.yaml`: roles, orgs, dates, 2–4 highlights each (needed by Phase 3; an existing CV or LinkedIn export works)
+- [ ] Resume content for `experience.yaml`: roles, orgs, dates, 2–4 highlights each (needed by Phase 3; an existing CV or LinkedIn export works; worth gathering during Phase 2)
