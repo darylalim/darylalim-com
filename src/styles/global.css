@@ -179,6 +179,39 @@ video {
   }
 }
 
+/* Long-form Markdown (blog posts, later project write-ups) */
+.prose ul,
+.prose ol {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-5);
+}
+
+.prose li + li {
+  margin-top: var(--space-1);
+}
+
+.prose blockquote {
+  margin: 0 0 var(--space-4);
+  padding-left: var(--space-4);
+  border-left: 3px solid var(--color-accent);
+  color: var(--color-text-muted);
+}
+
+/* Inline code; blocks are styled by pre above */
+.prose :not(pre) > code {
+  padding: 0.1em 0.3em;
+  border-radius: 4px;
+  background: var(--color-surface);
+}
+
+.prose pre {
+  margin: 0 0 var(--space-4);
+}
+
+.prose h2:first-child {
+  margin-top: 0;
+}
+
 /*
  * Print: black on white whatever the theme, without the site chrome.
  * Overriding the tokens (rather than each rule) means every component follows.

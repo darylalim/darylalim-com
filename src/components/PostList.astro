@@ -1,0 +1,80 @@
+---
+import { formatDate, type Post } from "../lib/posts";
+
+interface Props {
+  posts: Post[];
+}
+
+const { posts } = Astro.props;
+---
+
+{posts.length > 0 ? (
+  <ul class="posts">
+    {posts.map((post) => (
+      <li>
+        <time datetime={post.data.pubDate.toISOString()}>
+          {formatDate(post.data.pubDate)}
+        </time>
+        <div>
+          <a href={`/blog/${post.id}/`}>{post.data.title}</a>
+          {post.data.draft && <span class="draft">draft</span>}
+          <p>{post.data.description}</p>
+        </div>
+      </li>
+    ))}
+  </ul>
+) : (
+  <p class="empty">No posts yet. The first one is on its way.</p>
+)}
+
+<style>
+  .posts {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  li {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-1) var(--space-4);
+  }
+  li + li {
+    margin-top: var(--space-5);
+  }
+  time {
+    padding-top: 0.15em;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  a {
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  p {
+    margin: var(--space-1) 0 0;
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .draft {
+    margin-left: var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+    color: var(--color-accent);
+  }
+  .empty {
+    color: var(--color-text-muted);
+  }
+  /* Date above the title on phones */
+  @media (max-width: 30rem) {
+    li {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

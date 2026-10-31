@@ -4,14 +4,16 @@ interface Props {
   tags: readonly string[];
   /** Names the list for screen readers, e.g. "Skills" */
   label: string;
+  /** Makes each tag a link, e.g. to its tag page */
+  href?: (tag: string) => string;
 }
 
-const { tags, label } = Astro.props;
+const { tags, label, href } = Astro.props;
 ---
 
 <ul class="tags" aria-label={label}>
   {tags.map((tag) => (
-    <li>{tag}</li>
+    <li>{href ? <a href={href(tag)}>{tag}</a> : tag}</li>
   ))}
 </ul>
 
@@ -32,6 +34,15 @@ const { tags, label } = Astro.props;
     border-radius: var(--radius);
     color: var(--color-text-muted);
     background: var(--color-surface);
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+  }
+  a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
   }
 
   @media print {

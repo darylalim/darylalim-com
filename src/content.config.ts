@@ -53,5 +53,18 @@ const projects = defineCollection({
   }),
 });
 
-// blog (glob loader) joins when its pages are built
-export const collections = { experience, projects };
+/** Blog posts. Drafts render in `astro dev` and are left out of every build (see src/lib/posts.ts). */
+const blog = defineCollection({
+  loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/blog" }),
+  schema: z.object({
+    title: z.string(),
+    /** Used for the meta description, the RSS summary and the blog index */
+    description: z.string(),
+    pubDate: z.coerce.date(),
+    updatedDate: z.coerce.date().optional(),
+    tags: z.array(z.string()).default([]),
+    draft: z.boolean().default(false),
+  }),
+});
+
+export const collections = { blog, experience, projects };

@@ -1,0 +1,53 @@
+---
+import type { GetStaticPaths } from "astro";
+import PostList from "../../../components/PostList.astro";
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import { getPosts, tagSlug, type Post } from "../../../lib/posts";
+
+// One page per tag that a published post uses, so drafts never create empty tag pages
+export const getStaticPaths = (async () => {
+  const posts = await getPosts();
+  const byTag = new Map<string, { name: string; posts: Post[] }>();
+  for (const post of posts) {
+    for (const name of post.data.tags) {
+      const slug = tagSlug(name);
+      const group = byTag.get(slug) ?? { name, posts: [] };
+      group.posts.push(post);
+      byTag.set(slug, group);
+    }
+  }
+  return [...byTag].map(([tag, { name, posts }]) => ({
+    params: { tag },
+    props: { name, posts },
+  }));
+}) satisfies GetStaticPaths;
+
+const { name, posts } = Astro.props;
+---
+
+<BaseLayout
+  title={`Posts tagged ${name}`}
+  description={`Posts on ${name} by Daryl Lim.`}
+>
+  <p class="back">
+    <a href="/blog/">← All posts</a>
+  </p>
+  <h1>
+    Tagged <span class="tag">{name}</span>
+  </h1>
+  <PostList posts={posts} />
+</BaseLayout>
+
+<style>
+  .back {
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+  h1 {
+    margin-top: var(--space-3);
+  }
+  .tag {
+    color: var(--color-accent);
+  }
+</style>

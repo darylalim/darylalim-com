@@ -1,0 +1,26 @@
+---
+import PostList from "../../components/PostList.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getPosts } from "../../lib/posts";
+
+const posts = await getPosts();
+---
+
+<BaseLayout
+  title="Blog"
+  description="Writing on on-device AI, agent systems and building software that shows its work."
+>
+  <h1>Blog</h1>
+  <p class="feed">
+    Also as an <a href="/rss.xml">RSS feed</a>.
+  </p>
+  <PostList posts={posts} />
+</BaseLayout>
+
+<style>
+  .feed {
+    margin-bottom: var(--space-6);
+    color: var(--color-text-muted);
+    font-size: var(--font-size-sm);
+  }
+</style>
