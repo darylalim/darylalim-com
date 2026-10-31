@@ -1,0 +1,72 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "../../components/ProjectCard.astro";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { GITHUB_REPOS_URL, PROJECT_THEMES } from "../../consts";
+
+const projects = (await getCollection("projects")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+// One section per theme, in PROJECT_THEMES order; a theme with no projects is skipped
+const sections = PROJECT_THEMES.map((theme) => ({
+  ...theme,
+  projects: projects.filter((project) => project.data.theme === theme.id),
+})).filter((section) => section.projects.length > 0);
+---
+
+<BaseLayout
+  title="Projects"
+  description="Hand-picked projects in on-device AI, agent systems, healthcare AI and retrieval, each with the reasoning behind how it's built."
+>
+  <h1>Projects</h1>
+  <p class="intro">
+    A hand-picked few, grouped by theme. Each says what it does and why it's
+    built that way. The rest are on <a href={GITHUB_REPOS_URL}>GitHub</a>.
+  </p>
+
+  {sections.map((section) => (
+    <section aria-labelledby={section.id}>
+      <h2 id={section.id}>{section.label}</h2>
+      <p class="blurb">{section.blurb}</p>
+      <ul class="grid">
+        {section.projects.map((project) => (
+          <li>
+            <ProjectCard project={project} />
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+
+  <p class="more">
+    <a href={GITHUB_REPOS_URL}>More on GitHub →</a>
+  </p>
+</BaseLayout>
+
+<style>
+  .intro {
+    color: var(--color-text-muted);
+  }
+  h2 {
+    margin-bottom: var(--space-1);
+  }
+  .blurb {
+    margin-bottom: var(--space-4);
+    color: var(--color-text-muted);
+  }
+  /* One column: at the 44rem measure, two would make every card tall and
+     narrow, and a theme with one project would leave half a row empty */
+  .grid {
+    display: grid;
+    gap: var(--space-4);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .more {
+    margin-top: var(--space-7);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+</style>
