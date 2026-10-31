@@ -1,0 +1,232 @@
+---
+import { getCollection } from "astro:content";
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { FOOTER_LINKS, SITE_TITLE } from "../consts";
+
+// Newest first. "YYYY-MM" strings sort correctly as plain text.
+const entries = (await getCollection("experience")).sort((a, b) =>
+  b.data.start.localeCompare(a.data.start),
+);
+
+// UTC, so a month never shifts with the build machine's time zone
+const monthFormat = new Intl.DateTimeFormat("en-US", {
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+});
+const formatMonth = (month: string) =>
+  monthFormat.format(new Date(`${month}-01T00:00:00Z`));
+
+// Profiles only: on paper the RSS link means nothing
+const profiles = FOOTER_LINKS.filter((link) => link.me);
+---
+
+<BaseLayout
+  title="Resume"
+  description={`Resume of ${SITE_TITLE}: independent AI engineer building on-device AI, agent systems and clinical AI tools.`}
+>
+  <header class="resume-header">
+    <div>
+      <h1>{SITE_TITLE}</h1>
+      <ul class="contact">
+        {profiles.map(({ href }) => (
+          <li>
+            {/* The visible text is the URL, so it still works when printed */}
+            <a href={href}>{href.replace(/^https:\/\/(www\.)?/, "")}</a>
+          </li>
+        ))}
+      </ul>
+    </div>
+    {/* Hidden until the script runs, so visitors without JS don't get a dead button */}
+    <button class="print-button" type="button" hidden>
+      Download PDF
+    </button>
+  </header>
+
+  <h2>Experience</h2>
+  <ol class="entries">
+    {entries.map(({ data }) => (
+      <li class="entry">
+        <div class="entry-heading">
+          <h3>{data.role}</h3>
+          <p class="meta">
+            <time datetime={data.start}>{formatMonth(data.start)}</time>
+            {" – "}
+            {data.end ? (
+              <time datetime={data.end}>{formatMonth(data.end)}</time>
+            ) : (
+              "Present"
+            )}
+          </p>
+        </div>
+        <p class="org">
+          {data.org}
+          {data.location && <span class="location"> · {data.location}</span>}
+        </p>
+        <ul class="highlights">
+          {data.highlights.map((highlight) => (
+            <li>{highlight}</li>
+          ))}
+        </ul>
+        {data.skills && (
+          <ul class="skills" aria-label="Skills">
+            {data.skills.map((skill) => (
+              <li>{skill}</li>
+            ))}
+          </ul>
+        )}
+      </li>
+    ))}
+  </ol>
+</BaseLayout>
+
+<script>
+  // The PDF is the browser's "Save as PDF", fed by the print styles below,
+  // so the web page and the PDF come from the same experience.yaml
+  const button = document.querySelector<HTMLButtonElement>(".print-button");
+  if (button) {
+    button.hidden = false;
+    button.addEventListener("click", () => window.print());
+  }
+</script>
+
+<style>
+  .resume-header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: end;
+    justify-content: space-between;
+    gap: var(--space-4);
+  }
+  .resume-header h1 {
+    margin-bottom: var(--space-2);
+  }
+  .contact {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-1) var(--space-5);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+
+  .print-button {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-accent);
+    border-radius: var(--radius);
+    font: inherit;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-accent);
+    background: none;
+    cursor: pointer;
+  }
+  .print-button[hidden] {
+    display: none;
+  }
+  .print-button:hover {
+    background: var(--color-surface);
+  }
+
+  .entries {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .entry + .entry {
+    margin-top: var(--space-6);
+  }
+  .entry-heading {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0 var(--space-4);
+  }
+  .entry h3 {
+    margin: 0;
+  }
+  .meta,
+  .org {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .org {
+    color: var(--color-text);
+  }
+  .location {
+    color: var(--color-text-muted);
+  }
+  .highlights {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-5);
+  }
+  .highlights li + li {
+    margin-top: var(--space-2);
+  }
+  .skills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: var(--space-4) 0 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+  }
+  .skills li {
+    padding: 0 var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+  }
+
+  /* Tighter than on screen, so the whole resume fits on one page */
+  @media print {
+    .print-button {
+      display: none;
+    }
+    .resume-header h1 {
+      margin-top: 0;
+      margin-bottom: var(--space-1);
+      font-size: 20pt;
+    }
+    h2 {
+      margin: var(--space-4) 0 var(--space-2);
+      font-size: 13pt;
+      break-after: avoid;
+    }
+    .entry h3 {
+      font-size: 11.5pt;
+    }
+    .entry + .entry {
+      margin-top: var(--space-4);
+    }
+    .highlights {
+      margin-top: var(--space-1);
+    }
+    .highlights li + li {
+      margin-top: 0;
+    }
+    .skills {
+      gap: var(--space-1);
+      margin-top: var(--space-2);
+    }
+    /* Keep a role's heading with its first lines; long entries may still split */
+    .entry-heading,
+    .org {
+      break-after: avoid;
+    }
+    .highlights li {
+      break-inside: avoid;
+    }
+    .skills li {
+      background: none;
+    }
+  }
+</style>

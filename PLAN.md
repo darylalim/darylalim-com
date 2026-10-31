@@ -172,6 +172,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
     - The 2013–2016 political role is shown as *Assistant to the Chief of Staff, Office of a national political leader*, with **no `location`**, and no party, leader or country names (the visits are "in Europe and the Middle East"). This is a privacy decision: don't restore the details from old notes or exports
     - Also included: Rev.com (freelance transcriptionist, 2019–2020; ties to the transcription projects), East-West Center (APLP Fellow, 2017–2018), Pacific Gateway Center (Refugee Coordinator, 2012)
     - The 2020–2025 gap is left unexplained; there is no education section
+  - **Done 2026-10-31.** `src/pages/resume.astro` from `src/content/experience.yaml` (five entries, from the LinkedIn text). Prints to one Letter/A4 page: site-wide print rules in `global.css` (black on white, no header/footer), page-break and spacing rules in the page. `blog` and `projects` join `content.config.ts` with their pages, since an empty `glob()` folder warns on every build
 - Content: the real first post (kept `draft: true` until it's ready, so no placeholder ever ships), the 6 featured projects, real experience entries
 - **Done when:** every page renders with real content and `astro check` passes
 
