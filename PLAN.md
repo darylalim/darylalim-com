@@ -166,7 +166,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Blog**: index sorted by date, post pages with reading time, tag pages, previous/next links
   - **Done 2026-10-31.** `src/lib/posts.ts` (`getPosts()`) is the only way pages read posts: newest first, drafts included in `astro dev` only, so they never reach production or a preview build. A non-draft post that still contains `[TODO` fails the build. Post pages use `PostLayout.astro` (date, reading time at 230 wpm excluding code, tag links, older/newer links); tag pages exist only for tags a published post uses; Markdown styles are `.prose` in `global.css`
   - `/rss.xml` is built now rather than in Phase 4: full post HTML from the `glob()` loader's `rendered.html`, linked from every page's `<head>`
-  - The first post, "Why I build AI that runs on your own machine", is a draft: argument and facts drafted from the READMEs, with `[TODO: …]` notes where Daryl's own reasons belong
+  - The first post, "Why I build AI that runs on your own machine", published 2026-10-31: drafted from the READMEs with `[TODO: …]` notes, which Daryl filled in. It credits mlx-vlm and Neywa Labs (no formal relationship; Daryl is quoted on their homepage)
 - **Projects**: card grid grouped or filtered by `theme` (title, description, tech tags, links); detail pages for longer write-ups; "More on GitHub" link to the full repo list
   - **Done 2026-10-31.** `src/pages/projects/index.astro`: one section per theme, in the order of `PROJECT_THEMES` in `src/consts.ts`, which also builds the schema's `theme` enum. A single column of cards (`ProjectCard.astro`), because two columns at the 44rem measure made the cards tall and narrow and left half-empty rows. The title links to `url`, falling back to `repo`. Tech tags use `TagList.astro`, shared with the resume's skills. Detail pages stay in the backlog: a project's Markdown body is reserved for the longer write-up
   - Descriptions are drafted from each repo's README on GitHub, not local clones, which can be stale (granite-document-intelligence's was 59 commits behind and still described the earlier text-analysis app)
@@ -275,5 +275,5 @@ The About section expands on the three themes above, one short paragraph each.
 - [x] Bio one-liner (option B)
 - [ ] Photo (optional; launch without one if needed)
 - [x] Topic for the first blog post: "Why I build AI that runs on your own machine" (chosen 2026-10-31)
-- [ ] Fill the `[TODO]` notes in the first post, then publish it (set `pubDate`, remove `draft: true`)
+- [x] First post written and published (2026-10-31)
 - [x] Resume content for `experience.yaml` (from LinkedIn, 2026-10-31; rules under Phase 3 → Resume)
