@@ -22,6 +22,11 @@ Use `npm run preview`, not `astro dev`, to check anything that depends on how Cl
 - **No third-party requests.** Fonts and images are self-hosted.
 - **Install scripts.** npm blocks dependency install scripts unless they are listed in `allowScripts` in `package.json` (`esbuild`, `fsevents`, `workerd` are approved by name). If `npm install` reports a newly skipped script, review it, then run `npm install-scripts approve <pkg> --no-allow-scripts-pin`.
 - **Node** is pinned to the major version (`24`) in `.nvmrc`, which Workers Builds also reads; a major-only pin uses the version preinstalled in its build image instead of downloading one. Keep `engines` in `package.json` in step with it.
+- **Layout.** Every page uses `src/layouts/BaseLayout.astro` (SEO head, font preloads, header, `<main id="main">`, footer). Site name, description, nav and footer links live in `src/consts.ts`.
+- **Design tokens.** Colors, type scale and spacing are custom properties in `src/styles/global.css`. Use the tokens, never hard-coded colors. Each color is a `light-dark()` pair, so dark mode and the theme toggle work without extra CSS. Any new text color must pass WCAG AA (4.5:1) on `--color-bg` and `--color-surface` in both themes; check it before using it.
+- **Fonts.** IBM Plex Sans (body) and IBM Plex Mono (headings, nav, tags, dates) via `--font-sans` / `--font-mono`. Plex Mono only loads weights 400 and 600; use `--font-weight-bold` (600), or add a weight in `astro.config.mjs` first.
+- **Code blocks.** Shiki config and its `fit-code-to-site` transformer are in `astro.config.mjs`; they apply to Markdown/MDX fences only, not the `<Code />` component.
+- **Visual decisions.** Present choices (fonts, colors, layouts) as a temporary comparison page on a PR, so Daryl can choose on the preview URL; then remove the page in a follow-up commit.
 - Docs: https://docs.astro.build (routing, components, content collections, styling).
 
 ## Content
