@@ -31,7 +31,9 @@ Use `npm run preview`, not `astro dev`, to check anything that depends on how Cl
 
 ## Content
 
-Content collections arrive in Phase 3 (`src/content.config.ts`, schemas in `PLAN.md`). Until then there is nothing to add.
+Collections are defined in `src/content.config.ts` (schemas in `PLAN.md`); `blog` and `projects` are added with their pages in Phase 3.
+
+- **Resume:** edit `src/content/experience.yaml`; `/resume/` sorts entries by `start`, so file order doesn't matter. Dates are `YYYY-MM`; omit `end` for a current role. Follow the privacy rules in `PLAN.md` (Phase 3 → Resume): no phone or street address, and the 2013–2016 role stays generic with no location. After editing, check the print preview still fits on one page.
 
 <!-- Phase 3: replace this section with "how to add a post / project / resume entry". -->
 

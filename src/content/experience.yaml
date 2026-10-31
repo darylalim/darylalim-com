@@ -1,0 +1,71 @@
+# Resume entries, rendered on /resume/ (schema in src/content.config.ts).
+# Privacy rules (PLAN.md, Phase 3 → Resume): no phone or street address, and
+# the 2013–2016 role stays generic, with no location and no names.
+
+- id: independent-ai-engineer
+  role: Independent AI engineer
+  org: Self-employed
+  start: "2025-09"
+  location: Honolulu
+  highlights:
+    - Build private, on-device AI apps for Apple Silicon with MLX. granit transcribes recordings, converts documents, extracts forms and answers questions with citations, all without leaving the Mac.
+    - Build agent systems on LangChain Deep Agents for grant writing, financial planning, real estate and research, with human approval of final output and every figure computed by a deterministic tool, not the model.
+    - Build clinical AI tools, including Deepgram medical transcription with an audit trail that holds no patient data, and Corti SDK apps for ambient scribing, dictation and ICD-10 coding.
+    - Built a retrieval-augmented generation pipeline (Voyage AI embeddings and reranking, MongoDB Atlas Vector Search), scored on 50 fixed questions for retrieval, correctness and grounding, with Claude as the judge and each run recorded as a LangSmith experiment.
+  skills:
+    - Python
+    - TypeScript
+    - MLX
+    - LangChain
+    - LangGraph
+    - Deep Agents
+    - Claude API
+    - Streamlit
+    - FastAPI
+    - Next.js
+    - Astro
+    - IBM Granite
+    - Qwen
+    - MedGemma
+    - Whisper
+    - Deepgram
+    - Corti
+
+- id: assistant-to-chief-of-staff
+  role: Assistant to the Chief of Staff
+  org: Office of a national political leader
+  start: "2013-01"
+  end: "2016-04"
+  highlights:
+    - Drafted talking points for keynote speeches.
+    - Wrote research memos for the Chief of Staff.
+    - Managed logistics for international working visits in Europe and the Middle East.
+
+- id: rev-transcriptionist
+  role: Freelance transcriptionist
+  org: Rev.com
+  start: "2019-10"
+  end: "2020-06"
+  location: Remote
+  highlights:
+    - Transcribed interviews for enterprise technology product reviews.
+
+- id: east-west-center-aplp
+  role: Fellow, Asia Pacific Leadership Program
+  org: East-West Center
+  start: "2017-08"
+  end: "2018-05"
+  location: Honolulu
+  highlights:
+    - Took part in a cohort-based leadership learning and development program.
+
+- id: pacific-gateway-center
+  role: Refugee Coordinator
+  org: Pacific Gateway Center
+  start: "2012-02"
+  end: "2012-12"
+  location: Honolulu
+  highlights:
+    - Administered refugee assistance programs, including USCRI Victims of Human Trafficking, Reception and Placement, and Matching Grant.
+    - Initiated the migration of the case reporting system to the cloud.
+    - Attended program meetings with external partners to ensure quality services.
