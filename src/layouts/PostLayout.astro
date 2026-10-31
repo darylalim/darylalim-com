@@ -1,0 +1,109 @@
+---
+import TagList from "../components/TagList.astro";
+import { formatDate, readingTime, tagSlug, type Post } from "../lib/posts";
+import BaseLayout from "./BaseLayout.astro";
+
+interface Props {
+  post: Post;
+  /** Neighbours in date order, for the links at the end */
+  newer?: Post;
+  older?: Post;
+}
+
+const { post, newer, older } = Astro.props;
+const { title, description, pubDate, updatedDate, tags, draft } = post.data;
+const minutes = readingTime(post.body);
+---
+
+<BaseLayout title={title} description={description} type="article">
+  <article>
+    <header class="post-header">
+      <h1>{title}</h1>
+      <p class="meta">
+        <time datetime={pubDate.toISOString()}>{formatDate(pubDate)}</time>
+        {updatedDate && (
+          <>
+            {" · updated "}
+            <time datetime={updatedDate.toISOString()}>
+              {formatDate(updatedDate)}
+            </time>
+          </>
+        )}
+        {` · ${minutes} min read`}
+        {draft && <span class="draft"> · draft</span>}
+      </p>
+      {tags.length > 0 && (
+        <TagList
+          tags={tags}
+          label="Tags"
+          href={(tag) => `/blog/tags/${tagSlug(tag)}/`}
+        />
+      )}
+    </header>
+    <div class="prose">
+      <slot />
+    </div>
+  </article>
+
+  {(newer || older) && (
+    <nav class="pager" aria-label="More posts">
+      {older && (
+        <a class="older" href={`/blog/${older.id}/`}>
+          <span>← Older</span>
+          {older.data.title}
+        </a>
+      )}
+      {newer && (
+        <a class="newer" href={`/blog/${newer.id}/`}>
+          <span>Newer →</span>
+          {newer.data.title}
+        </a>
+      )}
+    </nav>
+  )}
+</BaseLayout>
+
+<style>
+  .post-header {
+    margin-bottom: var(--space-6);
+  }
+  .meta {
+    margin-bottom: var(--space-3);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .draft {
+    color: var(--color-accent);
+  }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-4);
+    margin-top: var(--space-7);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+  }
+  .pager a {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .pager a:hover {
+    color: var(--color-accent);
+  }
+  .pager span {
+    font-size: var(--font-size-sm);
+    font-weight: var(--font-weight-normal);
+    color: var(--color-text-muted);
+  }
+  .newer {
+    grid-column: 2;
+    text-align: right;
+  }
+</style>
