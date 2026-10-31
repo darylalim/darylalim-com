@@ -1,9 +1,208 @@
 ---
+import { getCollection } from "astro:content";
+import PostList from "../components/PostList.astro";
+import TagList from "../components/TagList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { PROJECT_THEMES, SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { getPosts } from "../lib/posts";
+
+// Featured projects in the Projects page's order: by theme, then newest first
+const themeOrder = PROJECT_THEMES.map((theme) => theme.id);
+const themeLabel = Object.fromEntries(
+  PROJECT_THEMES.map((theme) => [theme.id, theme.label]),
+);
+const featured = (
+  await getCollection("projects", ({ data }) => data.featured)
+).sort(
+  (a, b) =>
+    themeOrder.indexOf(a.data.theme) - themeOrder.indexOf(b.data.theme) ||
+    b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+const latestPosts = (await getPosts()).slice(0, 3);
 ---
 
 <BaseLayout>
-  <h1>{SITE_TITLE}</h1>
-  <p>{SITE_DESCRIPTION}</p>
+  <section class="intro" aria-labelledby="name">
+    {/* The "dl" monogram from favicon.svg, in theme colors; a photo may replace it later */}
+    <svg
+      class="monogram"
+      viewBox="0 0 32 32"
+      width="72"
+      height="72"
+      aria-hidden="true"
+    >
+      <rect width="32" height="32" rx="7"></rect>
+      <g fill="none" stroke-width="3" stroke-linecap="square">
+        <circle cx="10.5" cy="18.5" r="4.5"></circle>
+        <path d="M15 7.5V24"></path>
+        <path d="M19.5 7.5H22.5V20.5Q22.5 24 26 24"></path>
+      </g>
+    </svg>
+    <div>
+      <h1 id="name">{SITE_TITLE}</h1>
+      <p class="lead">{SITE_DESCRIPTION}</p>
+      <p class="role">Independent AI engineer in Honolulu.</p>
+    </div>
+  </section>
+
+  <section aria-labelledby="about">
+    <h2 id="about">What I build</h2>
+    <p>
+      <strong>On-device AI.</strong> I build private apps that run on Apple
+      Silicon with MLX and mlx-vlm. My largest, granit, turns meeting recordings
+      and documents into transcripts, Markdown and cited answers without
+      anything leaving the Mac. Because they run locally, they keep working
+      through an internet outage and cost nothing per use.{" "}
+      <span class="links">
+        <a href="/blog/why-i-build-ai-that-runs-on-your-own-machine/">
+          Why I build this way →
+        </a>
+        {" · "}
+        <a href="/projects/#on-device-ai">On-device projects →</a>
+      </span>
+    </p>
+    <p>
+      <strong>Agents that show their work.</strong> I build agent systems on
+      Deep Agents and Claude that you can check: a grant writer that quotes
+      evidence for every judgment and flags unknown facts instead of inventing
+      them, and a financial planner whose every figure comes from a tested tool,
+      not the model.{" "}
+      <span class="links">
+        <a href="/projects/#agents">Agent projects →</a>
+      </span>
+    </p>
+    <p>
+      <strong>Healthcare AI.</strong> I build clinical reference tools around
+      review and privacy: transcription that flags low-confidence words, locks
+      export until a clinician signs off and keeps an audit trail that never
+      records patient data, plus Corti SDK apps for ambient scribing, dictation
+      and medical coding.{" "}
+      <span class="links">
+        <a href="/projects/#healthcare">Healthcare projects →</a>
+      </span>
+    </p>
+  </section>
+
+  <section aria-labelledby="featured">
+    <h2 id="featured">Featured projects</h2>
+    <ul class="projects">
+      {featured.map(({ data }) => (
+        <li>
+          <span class="theme">{themeLabel[data.theme]}</span>
+          <div>
+            <a href={data.url ?? data.repo}>{data.title}</a>
+            <TagList tags={data.tech} label="Built with" />
+          </div>
+        </li>
+      ))}
+    </ul>
+    <p class="more">
+      <a href="/projects/">All projects, with the why →</a>
+    </p>
+  </section>
+
+  <section aria-labelledby="latest">
+    <h2 id="latest">Latest posts</h2>
+    <PostList posts={latestPosts} />
+    <p class="more">
+      <a href="/blog/">All posts →</a>
+    </p>
+  </section>
 </BaseLayout>
+
+<style>
+  .intro {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    margin: var(--space-6) 0 var(--space-7);
+  }
+  .intro h1 {
+    margin: 0 0 var(--space-2);
+  }
+  .lead {
+    margin-bottom: var(--space-2);
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-tight);
+    text-wrap: balance;
+  }
+  .role {
+    margin: 0;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .monogram {
+    flex: none;
+  }
+  .monogram rect {
+    fill: var(--color-surface);
+    stroke: var(--color-border);
+    stroke-width: 0.5;
+  }
+  .monogram g {
+    stroke: var(--color-accent);
+  }
+  /* Monogram above the name on phones */
+  @media (max-width: 30rem) {
+    .intro {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+  }
+
+  h2 {
+    margin-top: var(--space-7);
+  }
+  /* "… →" links at the end of each theme paragraph */
+  .links {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
+  }
+
+  .projects {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .projects li {
+    display: grid;
+    grid-template-columns: 7.5rem 1fr;
+    gap: var(--space-1) var(--space-4);
+  }
+  .projects li + li {
+    margin-top: var(--space-4);
+  }
+  .theme {
+    padding-top: 0.15em;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  .projects a {
+    display: inline-block;
+    margin-bottom: var(--space-2);
+    font-family: var(--font-mono);
+    font-weight: var(--font-weight-bold);
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .projects a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  @media (max-width: 30rem) {
+    .projects li {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .more {
+    margin-top: var(--space-5);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+</style>

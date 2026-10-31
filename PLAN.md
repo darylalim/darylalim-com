@@ -161,8 +161,10 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
   - Lighthouse won't audit a URL that returns 404 (`ERRORED_DOCUMENT_REQUEST`). Audit the 404 page at `/404`, which Workers serves with status 200; unknown URLs correctly return 404 with the same page
   - The one remaining Lighthouse note is the render-blocking stylesheet (~140 ms estimated on throttled mobile). Revisit in Phase 6: `build.inlineStylesheets: "always"` removes it, and the CSP hashes inline styles anyway
 
-### Phase 3: Pages & content ← next
+### Phase 3: Pages & content ✅
+**Done 2026-10-31** (PRs #17–#20). Every page renders real content and `astro check` passes.
 - **Home/About**: short intro (see Content below), optional photo (monogram until then), featured projects (`featured: true`), latest 3 posts
+  - **Done 2026-10-31.** The `dl` monogram as inline SVG in theme colors (no photo yet), the one-liner, "Independent AI engineer in Honolulu", three theme paragraphs ("What I build") linking to their Projects sections, a compact list of featured projects in theme order, and the latest 3 posts. The `Person` JSON-LD goes on this page in Phase 4
 - **Blog**: index sorted by date, post pages with reading time, tag pages, previous/next links
   - **Done 2026-10-31.** `src/lib/posts.ts` (`getPosts()`) is the only way pages read posts: newest first, drafts included in `astro dev` only, so they never reach production or a preview build. A non-draft post that still contains `[TODO` fails the build. Post pages use `PostLayout.astro` (date, reading time at 230 wpm excluding code, tag links, older/newer links); tag pages exist only for tags a published post uses; Markdown styles are `.prose` in `global.css`
   - `/rss.xml` is built now rather than in Phase 4: full post HTML from the `glob()` loader's `rendered.html`, linked from every page's `<head>`
@@ -181,7 +183,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - Content: the real first post (kept `draft: true` until it's ready, so no placeholder ever ships), the 6 featured projects, real experience entries
 - **Done when:** every page renders with real content and `astro check` passes
 
-### Phase 4: SEO & feeds
+### Phase 4: SEO & feeds ← next
+- Already done in Phase 3: the RSS feed (full content, linked from every page's `<head>`) and the sitemap, which the integration has generated since Phase 1
 - Sitemap generated automatically from `site` (URLs with trailing slashes, matching canonicals)
 - RSS feed at `/rss.xml` with full post content, linked from `<head>`
 - Open Graph: every page falls back to `og-default.png` (per-post images are in the backlog)
