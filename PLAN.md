@@ -83,7 +83,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 
 - **blog**: `title`, `description`, `pubDate`, `updatedDate?`, `tags: string[]`, `draft: boolean` (drafts excluded from production builds)
 - **projects**: `title`, `description`, `theme: "on-device-ai" | "agents" | "healthcare" | "retrieval"`, `tech: string[]`, `url?`, `repo?`, `featured: boolean`, `date`
-- **experience** (YAML, `file()` loader): `role`, `org`, `start`, `end?` (dates as `YYYY-MM`; no `end` = present), `location?` (city/remote only), `highlights: string[]`
+- **experience** (YAML, `file()` loader): `role`, `org`, `start`, `end?` (dates as `YYYY-MM`; no `end` = present), `location?` (city/remote only), `highlights: string[]`, `skills?: string[]` (used on the independent-work entry: languages, frameworks and models, each backed by a public repo)
 
 ## Phases
 
@@ -167,6 +167,11 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Projects**: card grid grouped or filtered by `theme` (title, description, tech tags, links); detail pages for longer write-ups; "More on GitHub" link to the full repo list
 - **Resume**: rendered from `experience.yaml`, with an `@media print` stylesheet (hide nav/footer/theme toggle, black on white, sensible page breaks) and a "Download PDF" button that triggers the browser's print dialog
   - Privacy: no phone number or street address (LinkedIn exports include both); contact is `hello@` only
+  - Content (decided 2026-10-31; source is the LinkedIn experience page as edited that day):
+    - Work-first order: **Independent AI engineer**, `2025-09` to present, Honolulu, comes first, with highlights and `skills` drawn from the GitHub repos. No earlier AI work exists, so don't backdate it
+    - The 2013–2016 political role is shown as *Assistant to the Chief of Staff, Office of a national political leader*, with **no `location`**, and no party, leader or country names (the visits are "in Europe and the Middle East"). This is a privacy decision: don't restore the details from old notes or exports
+    - Also included: Rev.com (freelance transcriptionist, 2019–2020; ties to the transcription projects), East-West Center (APLP Fellow, 2017–2018), Pacific Gateway Center (Refugee Coordinator, 2012)
+    - The 2020–2025 gap is left unexplained; there is no education section
 - Content: the real first post (kept `draft: true` until it's ready, so no placeholder ever ships), the 6 featured projects, real experience entries
 - **Done when:** every page renders with real content and `astro check` passes
 
@@ -264,4 +269,4 @@ The About section expands on the three themes above, one short paragraph each.
 - [x] Bio one-liner (option B)
 - [ ] Photo (optional; launch without one if needed)
 - [ ] Topic for the first blog post (suggested: "Why I build AI that runs on your own machine")
-- [ ] Resume content for `experience.yaml`: roles, orgs, dates, 2–4 highlights each (needed by Phase 3; an existing CV or LinkedIn export works; worth gathering during Phase 2)
+- [x] Resume content for `experience.yaml` (from LinkedIn, 2026-10-31; rules under Phase 3 → Resume)
