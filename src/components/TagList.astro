@@ -1,0 +1,45 @@
+---
+// Small mono tags: resume skills, project tech, and later blog post tags
+interface Props {
+  tags: readonly string[];
+  /** Names the list for screen readers, e.g. "Skills" */
+  label: string;
+}
+
+const { tags, label } = Astro.props;
+---
+
+<ul class="tags" aria-label={label}>
+  {tags.map((tag) => (
+    <li>{tag}</li>
+  ))}
+</ul>
+
+<style>
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-xs);
+  }
+  li {
+    padding: 0 var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    color: var(--color-text-muted);
+    background: var(--color-surface);
+  }
+
+  @media print {
+    .tags {
+      gap: var(--space-1);
+    }
+    li {
+      background: none;
+    }
+  }
+</style>

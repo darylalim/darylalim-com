@@ -22,3 +22,33 @@ export const FOOTER_LINKS = [
   },
   { href: "/rss.xml", label: "rss", me: false },
 ];
+
+// Project themes, in page order. content.config.ts builds the `theme` enum
+// from these ids, so a project can't name a theme the page doesn't show.
+export const PROJECT_THEMES = [
+  {
+    id: "on-device-ai",
+    label: "On-device AI",
+    blurb: "Runs on Apple Silicon with MLX. Your files never leave the Mac.",
+  },
+  {
+    id: "agents",
+    label: "Agents",
+    blurb:
+      "Agent systems on Deep Agents and Claude that cite their evidence and leave the arithmetic to tools.",
+  },
+  {
+    id: "healthcare",
+    label: "Healthcare AI",
+    blurb: "Clinical tools built around review, sign-off and privacy.",
+  },
+  {
+    id: "retrieval",
+    label: "Retrieval",
+    blurb: "Search and question answering over your own documents, measured.",
+  },
+] as const;
+
+export type ProjectThemeId = (typeof PROJECT_THEMES)[number]["id"];
+
+export const GITHUB_REPOS_URL = "https://github.com/darylalim?tab=repositories";

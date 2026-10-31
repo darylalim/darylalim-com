@@ -1,0 +1,75 @@
+---
+import type { CollectionEntry } from "astro:content";
+import TagList from "./TagList.astro";
+
+interface Props {
+  project: CollectionEntry<"projects">;
+  /** Heading level, so the card fits the page outline (h3 under a theme's h2) */
+  headingLevel?: 2 | 3;
+}
+
+const { project, headingLevel = 3 } = Astro.props;
+const { title, description, tech, url, repo } = project.data;
+const Heading = `h${headingLevel}` as const;
+// The title links to the live site if there is one, otherwise the repo
+const primary = url ?? repo;
+---
+
+<article class="card">
+  <Heading class="title">
+    {primary ? <a href={primary}>{title}</a> : title}
+  </Heading>
+  <p class="description">{description}</p>
+  <div class="footer">
+    <TagList tags={tech} label="Built with" />
+    {url && repo && (
+      <a class="repo" href={repo}>
+        source
+      </a>
+    )}
+  </div>
+</article>
+
+<style>
+  .card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: var(--space-4) var(--space-5);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-bg);
+  }
+  .card:has(.title a:hover) {
+    border-color: var(--color-accent);
+  }
+  .title {
+    margin: 0 0 var(--space-2);
+    font-size: var(--font-size-lg);
+  }
+  .title a {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+  .title a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+  }
+  .description {
+    margin-bottom: var(--space-4);
+    font-size: var(--font-size-sm);
+  }
+  /* Tags sit at the bottom, so they line up across cards in a row */
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2) var(--space-4);
+    margin-top: auto;
+  }
+  .repo {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+</style>

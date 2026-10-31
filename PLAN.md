@@ -165,6 +165,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Home/About**: short intro (see Content below), optional photo (monogram until then), featured projects (`featured: true`), latest 3 posts
 - **Blog**: index sorted by date, post pages with reading time, tag pages, previous/next links
 - **Projects**: card grid grouped or filtered by `theme` (title, description, tech tags, links); detail pages for longer write-ups; "More on GitHub" link to the full repo list
+  - **Done 2026-10-31.** `src/pages/projects/index.astro`: one section per theme, in the order of `PROJECT_THEMES` in `src/consts.ts`, which also builds the schema's `theme` enum. A single column of cards (`ProjectCard.astro`), because two columns at the 44rem measure made the cards tall and narrow and left half-empty rows. The title links to `url`, falling back to `repo`. Tech tags use `TagList.astro`, shared with the resume's skills. Detail pages stay in the backlog: a project's Markdown body is reserved for the longer write-up
+  - Descriptions are drafted from each repo's README on GitHub, not local clones, which can be stale (granite-document-intelligence's was 59 commits behind and still described the earlier text-analysis app)
 - **Resume**: rendered from `experience.yaml`, with an `@media print` stylesheet (hide nav/footer/theme toggle, black on white, sensible page breaks) and a "Download PDF" button that triggers the browser's print dialog
   - Privacy: no phone number or street address (LinkedIn exports include both); contact is `hello@` only
   - Content (decided 2026-10-31; source is the LinkedIn experience page as edited that day):

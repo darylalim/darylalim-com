@@ -31,7 +31,9 @@ Use `npm run preview`, not `astro dev`, to check anything that depends on how Cl
 
 ## Content
 
-Collections are defined in `src/content.config.ts` (schemas in `PLAN.md`); `blog` and `projects` are added with their pages in Phase 3.
+Collections are defined in `src/content.config.ts` (schemas in `PLAN.md`); `blog` is added with its pages in Phase 3.
+
+- **Projects:** add `src/content/projects/<repo-name>.md` with frontmatter only (`title`, `description`, `theme`, `tech`, `repo`, `featured`, `date`). `theme` must be an id from `PROJECT_THEMES` in `src/consts.ts`; add a theme there first and the page gains a section. Write the description from the repo's README on GitHub, not a local clone, and check each claim.
 
 - **Resume:** edit `src/content/experience.yaml`; `/resume/` sorts entries by `start`, so file order doesn't matter. Dates are `YYYY-MM`; omit `end` for a current role. Follow the privacy rules in `PLAN.md` (Phase 3 → Resume): no phone or street address, and the 2013–2016 role stays generic with no location. After editing, check the print preview still fits on one page.
 

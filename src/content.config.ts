@@ -1,6 +1,7 @@
 import { defineCollection } from "astro:content";
-import { file } from "astro/loaders";
+import { file, glob } from "astro/loaders";
 import { z } from "astro/zod";
+import { PROJECT_THEMES, type ProjectThemeId } from "./consts";
 
 // Resume dates are months, not days: "2025-09"
 const month = z
@@ -29,5 +30,28 @@ const experience = defineCollection({
     }),
 });
 
-// blog and projects (glob loaders) join when their pages are built
-export const collections = { experience };
+/** Featured projects, one Markdown file each; the body is an optional longer write-up. */
+const projects = defineCollection({
+  loader: glob({ pattern: "**/*.md", base: "./src/content/projects" }),
+  schema: z.object({
+    title: z.string(),
+    /** The card text: what it does, and why it's built that way */
+    description: z.string(),
+    theme: z.enum(
+      PROJECT_THEMES.map((theme) => theme.id) as [
+        ProjectThemeId,
+        ...ProjectThemeId[],
+      ],
+    ),
+    tech: z.array(z.string()).min(1),
+    /** A live demo or site, if there is one */
+    url: z.url().optional(),
+    repo: z.url().optional(),
+    featured: z.boolean().default(false),
+    /** When the project started; orders projects within a theme, newest first */
+    date: z.coerce.date(),
+  }),
+});
+
+// blog (glob loader) joins when its pages are built
+export const collections = { experience, projects };

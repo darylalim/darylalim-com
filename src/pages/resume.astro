@@ -1,5 +1,6 @@
 ---
 import { getCollection } from "astro:content";
+import TagList from "../components/TagList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
 import { FOOTER_LINKS, SITE_TITLE } from "../consts";
 
@@ -69,11 +70,9 @@ const profiles = FOOTER_LINKS.filter((link) => link.me);
           ))}
         </ul>
         {data.skills && (
-          <ul class="skills" aria-label="Skills">
-            {data.skills.map((skill) => (
-              <li>{skill}</li>
-            ))}
-          </ul>
+          <div class="skills">
+            <TagList tags={data.skills} label="Skills" />
+          </div>
         )}
       </li>
     ))}
@@ -169,24 +168,9 @@ const profiles = FOOTER_LINKS.filter((link) => link.me);
     margin-top: var(--space-2);
   }
   .skills {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-    margin: var(--space-4) 0 0;
-    padding: 0;
-    list-style: none;
-    font-family: var(--font-mono);
-    font-size: var(--font-size-xs);
-  }
-  .skills li {
-    padding: 0 var(--space-2);
-    border: 1px solid var(--color-border);
-    border-radius: var(--radius);
-    color: var(--color-text-muted);
-    background: var(--color-surface);
+    margin-top: var(--space-4);
   }
 
-  /* Tighter than on screen, so the whole resume fits on one page */
   @media print {
     .print-button {
       display: none;
@@ -214,7 +198,6 @@ const profiles = FOOTER_LINKS.filter((link) => link.me);
       margin-top: 0;
     }
     .skills {
-      gap: var(--space-1);
       margin-top: var(--space-2);
     }
     /* Keep a role's heading with its first lines; long entries may still split */
@@ -224,9 +207,6 @@ const profiles = FOOTER_LINKS.filter((link) => link.me);
     }
     .highlights li {
       break-inside: avoid;
-    }
-    .skills li {
-      background: none;
     }
   }
 </style>
