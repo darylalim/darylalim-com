@@ -49,26 +49,38 @@ const latestPosts = (await getPosts()).slice(0, 3);
   <section aria-labelledby="about">
     <h2 id="about">What I build</h2>
     <p>
-      <strong>On-device AI.</strong> Private apps that run on Apple Silicon with
-      MLX and mlx-vlm. granit turns meeting recordings and documents into
-      transcripts, Markdown and cited answers without anything leaving the Mac.
-      I start local, so the tools keep working through an internet outage and
-      cost nothing per use.{" "}
-      <a href="/projects/#on-device-ai">On-device projects</a>
+      <strong>On-device AI.</strong> I build private apps that run on Apple
+      Silicon with MLX and mlx-vlm. My largest, granit, turns meeting recordings
+      and documents into transcripts, Markdown and cited answers without
+      anything leaving the Mac. Because they run locally, they keep working
+      through an internet outage and cost nothing per use.{" "}
+      <span class="links">
+        <a href="/blog/why-i-build-ai-that-runs-on-your-own-machine/">
+          Why I build this way →
+        </a>
+        {" · "}
+        <a href="/projects/#on-device-ai">On-device projects →</a>
+      </span>
     </p>
     <p>
-      <strong>Agents that show their work.</strong> Agent systems on Deep Agents
-      and Claude, built so you can check them: every grant-fit verdict quotes
-      its evidence, every financial figure comes from a tested tool rather than
-      the model, and unknown facts are flagged for a person instead of invented.{" "}
-      <a href="/projects/#agents">Agent projects</a>
+      <strong>Agents that show their work.</strong> I build agent systems on
+      Deep Agents and Claude that you can check: a grant writer that quotes
+      evidence for every judgment and flags unknown facts instead of inventing
+      them, and a financial planner whose every figure comes from a tested tool,
+      not the model.{" "}
+      <span class="links">
+        <a href="/projects/#agents">Agent projects →</a>
+      </span>
     </p>
     <p>
-      <strong>Healthcare AI.</strong> Clinical tools built around review and
-      privacy: transcription that flags low-confidence words, waits for a
-      clinician's sign-off and keeps an audit trail with no patient data, plus
-      Corti SDK apps for ambient scribing, dictation and medical coding.{" "}
-      <a href="/projects/#healthcare">Healthcare projects</a>
+      <strong>Healthcare AI.</strong> I build clinical reference tools around
+      review and privacy: transcription that flags low-confidence words, locks
+      export until a clinician signs off and keeps an audit trail that never
+      records patient data, plus Corti SDK apps for ambient scribing, dictation
+      and medical coding.{" "}
+      <span class="links">
+        <a href="/projects/#healthcare">Healthcare projects →</a>
+      </span>
     </p>
   </section>
 
@@ -143,6 +155,12 @@ const latestPosts = (await getPosts()).slice(0, 3);
 
   h2 {
     margin-top: var(--space-7);
+  }
+  /* "… →" links at the end of each theme paragraph */
+  .links {
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    white-space: nowrap;
   }
 
   .projects {
