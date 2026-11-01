@@ -75,6 +75,8 @@ const imageUrl = new URL(image, Astro.site);
     <meta property="og:image:alt" content={imageAlt} />
     {/* X falls back to the og: tags for title, description and image */}
     <meta name="twitter:card" content="summary_large_image" />
+    {/* Page-specific head tags, e.g. the home page's JSON-LD */}
+    <slot name="head" />
 
     {/* Mono sets headings, nav, tags and dates, so both are above the fold */}
     <Font cssVariable="--font-sans" preload />

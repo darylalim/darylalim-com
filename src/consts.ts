@@ -1,7 +1,8 @@
-// Site-wide values shared by the layout, and later the RSS feed and JSON-LD.
+// Site-wide values shared by the layout, the RSS feed and the home page's JSON-LD.
 export const SITE_TITLE = "Daryl Lim";
 export const SITE_DESCRIPTION =
   "I build AI that runs on your own machine, and agents that show their work.";
+export const JOB_TITLE = "Independent AI engineer";
 
 export const NAV_LINKS = [
   { href: "/", label: "home" },
