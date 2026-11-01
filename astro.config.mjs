@@ -1,6 +1,9 @@
 // @ts-check
 import { defineConfig, fontProviders } from "astro/config";
 
+import { createHash } from "node:crypto";
+import { readFileSync } from "node:fs";
+
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
 
@@ -31,12 +34,85 @@ const fitCodeToSite = {
   },
 };
 
+const sha256 = (/** @type {string} */ text) =>
+  /** @type {`sha256-${string}`} */ (
+    `sha256-${createHash("sha256").update(text).digest("base64")}`
+  );
+
+/**
+ * CSP hash of the is:inline theme script in BaseLayout.astro. Astro doesn't process
+ * is:inline scripts, so it can't hash them; this reads the script from the source and
+ * hashes it, so editing the script can never leave a stale hash behind. Only a tag at
+ * the start of a line counts, so the text in a comment can't match.
+ */
+function themeScriptHash() {
+  const layout = readFileSync("./src/layouts/BaseLayout.astro", "utf8");
+  const matches = [
+    ...layout.matchAll(/^[ \t]*<script is:inline>([\s\S]*?)<\/script>/gm),
+  ];
+  if (matches.length !== 1) {
+    throw new Error(
+      `Expected 1 is:inline script in BaseLayout.astro, found ${matches.length}`,
+    );
+  }
+  return sha256(matches[0][1]);
+}
+
+const THEME_SCRIPT_HASH = themeScriptHash();
+
+/**
+ * Fails the build if the theme script in the built home page doesn't match the hash in
+ * the CSP, e.g. if Astro ever stops emitting is:inline scripts byte for byte. Without
+ * this, a mismatch only shows up as a CSP error in a visitor's console.
+ * @type {import("astro").AstroIntegration}
+ */
+const checkThemeScriptHash = {
+  name: "check-theme-script-hash",
+  hooks: {
+    "astro:build:done": ({ dir, logger }) => {
+      const html = readFileSync(new URL("index.html", dir), "utf8");
+      const script = html.match(/<script>([\s\S]*?)<\/script>/)?.[1];
+      if (script === undefined || sha256(script) !== THEME_SCRIPT_HASH) {
+        throw new Error(
+          "The built theme script doesn't match its CSP hash in astro.config.mjs",
+        );
+      }
+      logger.info(`theme script matches its CSP hash (${THEME_SCRIPT_HASH})`);
+    },
+  },
+};
+
 // https://astro.build/config
 export default defineConfig({
   site: "https://darylalim.com",
   // Matches the directory-style build output and Workers' default html_handling
   trailingSlash: "always",
-  integrations: [mdx(), sitemap()],
+  integrations: [mdx(), sitemap(), checkThemeScriptHash],
+  // Per-page <meta> CSP with hashes for the scripts and styles Astro processes.
+  // Not active in `astro dev`: check it with `npm run preview`.
+  // frame-ancestors is ignored in a <meta> CSP, so it is a header in public/_headers.
+  security: {
+    csp: {
+      directives: [
+        "default-src 'self'",
+        "img-src 'self' data:",
+        "font-src 'self'",
+        "object-src 'none'",
+        "base-uri 'self'",
+        "form-action 'self'",
+      ],
+      // The is:inline theme script; Astro hashes every other script itself
+      scriptDirective: { hashes: [THEME_SCRIPT_HASH] },
+      styleDirective: {
+        // Shiki writes inline style attributes, so allow those (style-src-attr) but not
+        // inline <style> elements (style-src-elem: 'self' plus Astro's hashes)
+        resources: [
+          { resource: "'self'", kind: "element" },
+          { resource: "'unsafe-inline'", kind: "attribute" },
+        ],
+      },
+    },
+  },
   markdown: {
     shikiConfig: {
       // Every token gets color: light-dark(<light>, <dark>), so code blocks follow

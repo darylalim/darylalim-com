@@ -244,20 +244,9 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 ### Phase 6: Performance & polish
 - `public/_headers`: long cache on `/_astro/*` (hashed assets) and security headers (`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Content-Security-Policy: frame-ancestors 'none'`)
   - `frame-ancestors` is ignored in a `<meta>` CSP, so clickjacking protection must be a header. A header containing only `frame-ancestors` doesn't restrict scripts or styles, so it can't conflict with Astro's per-page hashes
-- Content Security Policy via Astro's `security.csp` (emits a per-page `<meta>` with hashes for the scripts and styles Astro processes):
-  ```js
-  security: {
-    csp: {
-      directives: ["default-src 'self'", "img-src 'self' data:", "font-src 'self'"],
-      // The is:inline theme script isn't processed by Astro, so its hash is added by hand.
-      // Regenerate it whenever the script changes.
-      scriptDirective: { hashes: ["sha256-<theme-script-hash>"] },
-      // Shiki writes inline style attributes; allow those only, not inline <style> or scripts
-      styleDirective: { resources: ["'self'", { resource: "'unsafe-inline'", kind: "attribute" }] },
-    },
-  },
-  ```
-  - CSP is not active in `astro dev`; test with `npm run preview`, and confirm the theme toggle works with no CSP errors in the console
+- Content Security Policy via Astro's `security.csp` (emits a per-page `<meta>` with hashes for the scripts and styles Astro processes)
+  - **Done 2026-11-01 (step 1, `feat/security-headers`):** `public/_headers` and `security.csp` in `astro.config.mjs`. Changes from the draft: the theme script's hash is computed in the config from `BaseLayout.astro` instead of pasted by hand, so it can't go stale, and a `check-theme-script-hash` integration fails the build if the built script doesn't match it; `'self'` is scoped to `style-src-elem` (Astro warns when a plain `style-src` source is mixed with `style-src-attr`); added `object-src 'none'`, `base-uri 'self'`, `form-action 'self'`. Astro still prints a generic "Shiki … not compatible with CSP" warning; `style-src-attr 'unsafe-inline'` is the fix for it, so ignore it
+  - Checked in `npm run preview`: headers on pages, `/_astro/*` (incl. fonts) cached immutable, stored theme applies before paint, toggle and resume print button work, style attributes allowed, injected inline `<style>`/`<script>` blocked, no console errors
   - If Cloudflare Web Analytics is enabled later, allow its script origin in `scriptDirective.resources`, or the beacon is silently blocked
 - Use Astro `<Image />` for photos/screenshots (build-time optimization)
 - Lighthouse / Core Web Vitals audit; target 95+ in every category
