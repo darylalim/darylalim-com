@@ -184,7 +184,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Done when:** every page renders with real content and `astro check` passes
 
 ### Phase 4: SEO & feeds ✅
-**Done 2026-11-01** (PR #21). Left over: the **[Daryl]** items below, and re-running the Rich Results Test on https://darylalim.com/ once Phase 5 attaches the domain.
+**Done 2026-11-01** (PR #21). Left over: Google Search Console (**[Daryl]**, below). The Rich Results Test on https://darylalim.com/ passed 2026-11-01: 1 valid Profile page, no errors or warnings, page fetch successful, indexing allowed.
 - Already done in Phase 3: the RSS feed (full content, linked from every page's `<head>`) and the sitemap, which the integration has generated since Phase 1
 - Sitemap generated automatically from `site` (URLs with trailing slashes, matching canonicals)
 - RSS feed at `/rss.xml` with full post content, linked from `<head>`
@@ -193,7 +193,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - `robots.txt` pointing to the sitemap
 - Identity (to stand out from other people named Daryl Lim):
   - `Person` JSON-LD on the home page: `name`, `url`, `jobTitle`, `sameAs` → GitHub and LinkedIn
-  - **[Daryl]** Link back to https://darylalim.com from the GitHub profile and LinkedIn
+  - **[Daryl]** Link back to https://darylalim.com from the GitHub profile and LinkedIn (**done** 2026-11-01)
   - **[Daryl]** Google Search Console: verify `darylalim.com` with a DNS TXT record and submit the sitemap (after Phase 5)
 - **Built 2026-11-01** (`feat/seo`): `ProfilePage` JSON-LD with a `Person` as `mainEntity` on the home page only (Rich Results Test recognises `ProfilePage`, not a bare `Person`), with `sameAs` taken from the footer's `rel="me"` links and a city-level address (Honolulu, no street, per the privacy rules). It goes into a new `head` slot in `BaseLayout`. The 404 page explains itself and links to every nav item; `public/robots.txt` points to `sitemap-index.xml`. The sitemap already leaves out the 404. Validated on the preview: `npm run check:seo` (JSON-LD, OG, robots.txt, sitemap, RSS) passes, and the Rich Results Test finds 1 valid Profile page item. It also reports a crawl error, because Cloudflare adds `X-Robots-Tag: noindex` to every preview; re-run it on https://darylalim.com/ after Phase 5
 - **Done when:** the sitemap, RSS and OG tags validate, and Google's Rich Results Test recognises the `Person` data
@@ -214,7 +214,7 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 - **2026-11-01, steps 1–3 done** (via the Cloudflare MCP server). Zone settings: Email Address Obfuscation off, Minimum TLS 1.2, Always Use HTTPS on (HSTS still off). Email Routing enabled: Cloudflare added 3 MX records, an SPF TXT and a DKIM TXT (`cf2024-1._domainkey`); the Gmail destination was already verified; rule `hello@darylalim.com` → Gmail. Catch-all left off (drop), so other addresses bounce
 - **Step 4 done 2026-11-01** (PR #23): `routes` plus an explicit `"workers_dev": true`, because Wrangler turns workers.dev off by default once `routes` is set; the workers.dev URL stays as a fallback, and canonicals already point to darylalim.com
 - **Step 5 done 2026-11-01**: proxied `AAAA www → 100::` plus a Single Redirect rule (`http.host eq "www.darylalim.com"` → `concat("https://darylalim.com", http.request.uri.path)`, 301, query string kept)
-- **Step 6 done 2026-11-01**, except the **[Daryl]** checks: `npm run check:seo -- https://darylalim.com/` passes; HTTP→HTTPS and `www` → apex return 301 in one hop with path and query kept; production sends no `X-Robots-Tag: noindex`; the test email to `hello@` arrived; workers.dev still serves the site. Left for Daryl: the Rich Results Test on https://darylalim.com/, and Search Console (Phase 4)
+- **Step 6 done 2026-11-01**, except the **[Daryl]** checks: `npm run check:seo -- https://darylalim.com/` passes; HTTP→HTTPS and `www` → apex return 301 in one hop with path and query kept; production sends no `X-Robots-Tag: noindex`; the test email to `hello@` arrived; workers.dev still serves the site. Rich Results Test on https://darylalim.com/ passed (1 valid Profile page, 0 errors, 0 warnings, indexing allowed). Left for Daryl: Search Console (Phase 4)
 - **Step 7** (HSTS): not before 2026-11-04, so problems from the domain switch show up before browsers cache HSTS
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
