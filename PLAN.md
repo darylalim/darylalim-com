@@ -198,7 +198,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Built 2026-11-01** (`feat/seo`): `ProfilePage` JSON-LD with a `Person` as `mainEntity` on the home page only (Rich Results Test recognises `ProfilePage`, not a bare `Person`), with `sameAs` taken from the footer's `rel="me"` links and a city-level address (Honolulu, no street, per the privacy rules). It goes into a new `head` slot in `BaseLayout`. The 404 page explains itself and links to every nav item; `public/robots.txt` points to `sitemap-index.xml`. The sitemap already leaves out the 404. Validated on the preview: `npm run check:seo` (JSON-LD, OG, robots.txt, sitemap, RSS) passes, and the Rich Results Test finds 1 valid Profile page item. It also reports a crawl error, because Cloudflare adds `X-Robots-Tag: noindex` to every preview; re-run it on https://darylalim.com/ after Phase 5
 - **Done when:** the sitemap, RSS and OG tags validate, and Google's Rich Results Test recognises the `Person` data
 
-### Phase 5: Go live on darylalim.com ← next
+### Phase 5: Go live on darylalim.com ← next (only HSTS, step 7, left)
 The pipeline already works from Phase 1; this phase attaches the domain and hardens the zone.
 
 **Order (decided 2026-11-01):** harden the zone and set up email *before* attaching the domain, so darylalim.com is never live with weak settings. With no DNS records on the zone, the settings and Email Routing have no visible effect until the domain is attached. The numbered steps below are the reference; do them in this order:
@@ -212,7 +212,10 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 
 **Progress:**
 - **2026-11-01, steps 1–3 done** (via the Cloudflare MCP server). Zone settings: Email Address Obfuscation off, Minimum TLS 1.2, Always Use HTTPS on (HSTS still off). Email Routing enabled: Cloudflare added 3 MX records, an SPF TXT and a DKIM TXT (`cf2024-1._domainkey`); the Gmail destination was already verified; rule `hello@darylalim.com` → Gmail. Catch-all left off (drop), so other addresses bounce
-- **Step 4** (`feat/custom-domain`): `routes` plus an explicit `"workers_dev": true`, because Wrangler turns workers.dev off by default once `routes` is set; the workers.dev URL stays as a fallback, and canonicals already point to darylalim.com
+- **Step 4 done 2026-11-01** (PR #23): `routes` plus an explicit `"workers_dev": true`, because Wrangler turns workers.dev off by default once `routes` is set; the workers.dev URL stays as a fallback, and canonicals already point to darylalim.com
+- **Step 5 done 2026-11-01**: proxied `AAAA www → 100::` plus a Single Redirect rule (`http.host eq "www.darylalim.com"` → `concat("https://darylalim.com", http.request.uri.path)`, 301, query string kept)
+- **Step 6 done 2026-11-01**, except the **[Daryl]** checks: `npm run check:seo -- https://darylalim.com/` passes; HTTP→HTTPS and `www` → apex return 301 in one hop with path and query kept; production sends no `X-Robots-Tag: noindex`; the test email to `hello@` arrived; workers.dev still serves the site. Left for Daryl: the Rich Results Test on https://darylalim.com/, and Search Console (Phase 4)
+- **Step 7** (HSTS): not before 2026-11-04, so problems from the domain switch show up before browsers cache HSTS
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
    - Existing MX records will clash with Email Routing; decide whether anything currently receives mail there
@@ -284,7 +287,7 @@ The About section expands on the three themes above, one short paragraph each.
 
 ### Links
 - GitHub: https://github.com/darylalim
-- Email: hello@darylalim.com (after Phase 5 Email Routing)
+- Email: hello@darylalim.com (Cloudflare Email Routing, live 2026-11-01)
 - LinkedIn: https://www.linkedin.com/in/daryl-lim-862a815
 
 ## Pending from Daryl
