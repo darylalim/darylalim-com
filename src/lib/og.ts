@@ -22,21 +22,13 @@ const fonts = [
   { name: "Plex Mono", data: font(600), weight: 600 as const },
 ];
 
-const dark = {
+// The dark-theme tokens, as in og-default.png
+const c = {
   bg: "#121214",
   text: "#ececee",
   muted: "#a1a1a8",
   accent: "#4fd1c0",
 };
-const light = {
-  bg: "#fdfdfc",
-  text: "#1c1c1e",
-  muted: "#5e5e63",
-  accent: "#0d7068",
-};
-
-export const OG_VARIANTS = ["dark", "light", "description"] as const;
-export type OgVariant = (typeof OG_VARIANTS)[number];
 
 type Node = { type: string; props: Record<string, unknown> };
 const el = (
@@ -54,10 +46,8 @@ const el = (
 const titleSize = (title: string) =>
   title.length <= 32 ? 68 : title.length <= 56 ? 58 : 48;
 
-function card(post: Post, variant: OgVariant): Node {
-  const { title, description, pubDate, tags } = post.data;
-  const c = variant === "light" ? light : dark;
-  const withDescription = variant === "description";
+function card(post: Post): Node {
+  const { title, pubDate, tags } = post.data;
 
   return el(
     {
@@ -79,33 +69,15 @@ function card(post: Post, variant: OgVariant): Node {
       "daryl lim",
     ),
     el(
-      { flexDirection: "column", gap: 24 },
-      el(
-        {
-          fontSize: withDescription ? titleSize(title) - 6 : titleSize(title),
-          fontWeight: 600,
-          lineHeight: 1.2,
-          letterSpacing: "-0.02em",
-          // Even line lengths, so a title never ends on one stranded word
-          textWrap: "balance",
-        },
-        title,
-      ),
-      ...(withDescription
-        ? [
-            el(
-              {
-                fontSize: 26,
-                lineHeight: 1.45,
-                color: c.muted,
-                // satori clamps with lineClamp only on block-level text
-                display: "block",
-                lineClamp: 2,
-              },
-              description,
-            ),
-          ]
-        : []),
+      {
+        fontSize: titleSize(title),
+        fontWeight: 600,
+        lineHeight: 1.2,
+        letterSpacing: "-0.02em",
+        // Even line lengths, so a title never ends on one stranded word
+        textWrap: "balance",
+      },
+      title,
     ),
     el(
       {
@@ -122,9 +94,8 @@ function card(post: Post, variant: OgVariant): Node {
 
 export async function renderOgImage(
   post: Post,
-  variant: OgVariant = "dark",
 ): Promise<Uint8Array<ArrayBuffer>> {
-  const svg = await satori(card(post, variant) as never, {
+  const svg = await satori(card(post) as never, {
     width: OG_WIDTH,
     height: OG_HEIGHT,
     fonts,
