@@ -183,7 +183,8 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - Content: the real first post (kept `draft: true` until it's ready, so no placeholder ever ships), the 6 featured projects, real experience entries
 - **Done when:** every page renders with real content and `astro check` passes
 
-### Phase 4: SEO & feeds ← next
+### Phase 4: SEO & feeds ✅
+**Done 2026-11-01** (PR #21). Left over: the **[Daryl]** items below, and re-running the Rich Results Test on https://darylalim.com/ once Phase 5 attaches the domain.
 - Already done in Phase 3: the RSS feed (full content, linked from every page's `<head>`) and the sitemap, which the integration has generated since Phase 1
 - Sitemap generated automatically from `site` (URLs with trailing slashes, matching canonicals)
 - RSS feed at `/rss.xml` with full post content, linked from `<head>`
@@ -197,19 +198,29 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Built 2026-11-01** (`feat/seo`): `ProfilePage` JSON-LD with a `Person` as `mainEntity` on the home page only (Rich Results Test recognises `ProfilePage`, not a bare `Person`), with `sameAs` taken from the footer's `rel="me"` links and a city-level address (Honolulu, no street, per the privacy rules). It goes into a new `head` slot in `BaseLayout`. The 404 page explains itself and links to every nav item; `public/robots.txt` points to `sitemap-index.xml`. The sitemap already leaves out the 404. Validated on the preview: `npm run check:seo` (JSON-LD, OG, robots.txt, sitemap, RSS) passes, and the Rich Results Test finds 1 valid Profile page item. It also reports a crawl error, because Cloudflare adds `X-Robots-Tag: noindex` to every preview; re-run it on https://darylalim.com/ after Phase 5
 - **Done when:** the sitemap, RSS and OG tags validate, and Google's Rich Results Test recognises the `Person` data
 
-### Phase 5: Go live on darylalim.com
+### Phase 5: Go live on darylalim.com ← next
 The pipeline already works from Phase 1; this phase attaches the domain and hardens the zone.
+
+**Order (decided 2026-11-01):** harden the zone and set up email *before* attaching the domain, so darylalim.com is never live with weak settings. With no DNS records on the zone, the settings and Email Routing have no visible effect until the domain is attached. The numbered steps below are the reference; do them in this order:
+1. **[Daryl]** Re-authorize the Cloudflare MCP server with write access (zone settings, DNS, Email Routing, Workers routes); the current connection is read-only
+2. Zone settings (step 4), **except HSTS**: Email Address Obfuscation off, Minimum TLS 1.2, Always Use HTTPS on
+3. Email Routing (step 5): enable it, **[Daryl]** verify the destination inbox, create `hello@`
+4. One PR, `feat/custom-domain`: the `routes` custom domain (step 2) and `hello@darylalim.com` in `FOOTER_LINKS` (see the comment in `src/consts.ts`). Merging it puts the domain live with working email
+5. The `www` redirect (step 3)
+6. Verify: `npm run check:seo -- https://darylalim.com/`, the Rich Results Test, the HTTP→HTTPS and `www` redirects (path and query kept), and a test email to `hello@`
+7. HSTS last, with a short `max-age` (e.g. 300); raise it after a few days with no problems. Browsers cache HSTS, so a mistake can't be undone for visitors who already have it
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
    - Existing MX records will clash with Email Routing; decide whether anything currently receives mail there
    - **Checked 2026-10-30 (read-only, via the Cloudflare MCP server): passed.** Zone active on the Free plan with Cloudflare nameservers; no DNS records at all (no A/AAAA/CNAME/MX), Email Routing unconfigured, no Worker custom domains. Re-check only if records are added before Phase 5
+   - **Re-checked 2026-11-01 (read-only): passed, unchanged.** Still no DNS records, Email Routing unconfigured, no Worker custom domains, no redirect rules. Zone settings as in the "Now" column of step 4
 2. Add the custom domain in `wrangler.jsonc` and merge:
    ```jsonc
    "routes": [{ "pattern": "darylalim.com", "custom_domain": true }]
    ```
 3. `www.darylalim.com` → `darylalim.com`: proxied DNS record for `www` (e.g. `AAAA 100::`) + a Cloudflare Redirect Rule (301, keep path and query)
 4. Zone settings (current values from the 2026-10-30 check → target):
-   | Setting | Now | Target | Why |
+   | Setting | Now (2026-11-01) | Target | Why |
    | --- | --- | --- | --- |
    | Email Address Obfuscation | on | **off** | Injects a decode script the CSP blocks, breaking the `hello@` link |
    | Rocket Loader | off | off | Rewrites script loading; already correct |
@@ -220,7 +231,7 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
    | SSL/TLS mode | Full | Full | Fine for Workers custom domains |
    - Changing these needs a Cloudflare MCP session with write access (**[Daryl]** re-authorize with a broader scope than "Read only"), or the dashboard
 5. Email Routing: enable it on the zone, **[Daryl]** verify the destination inbox, and create `hello@darylalim.com` → personal inbox (Cloudflare adds the MX/SPF records)
-6. Rollback: a bad deploy is reverted with `npx wrangler rollback` (or from the Worker's Deployments tab); document this in `CLAUDE.md`
+6. Rollback: a bad deploy is reverted with `npx wrangler rollback` (or from the Worker's Deployments tab); document this in `CLAUDE.md` (**done**: see "Git and deploys" in `CLAUDE.md`)
 - **Done when:** https://darylalim.com serves the site, `www` redirects with the path preserved, HTTP redirects to HTTPS, and a test email to `hello@` arrives
 
 ### Phase 6: Performance & polish
