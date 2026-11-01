@@ -36,8 +36,9 @@ const imageUrl = new URL(image, Astro.site);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     {/* Applies a stored theme before first paint, so the page never flashes the
-        wrong theme. is:inline keeps it unbundled and render-blocking; the CSP
-        (Phase 6) needs its hash, so update that whenever this script changes. */}
+        wrong theme. is:inline keeps it unbundled and render-blocking. Astro can't
+        hash is:inline scripts, so astro.config.mjs reads this one and adds its CSP
+        hash; keep it the only inline script in this file. */}
     <script is:inline>
       try {
         const theme = localStorage.getItem("theme");
