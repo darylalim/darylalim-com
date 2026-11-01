@@ -7,6 +7,11 @@
     "directory": "./dist",
     "not_found_handling": "404-page",
   },
+  // Custom domain: Cloudflare creates the DNS record and certificate on deploy.
+  "routes": [{ "pattern": "darylalim.com", "custom_domain": true }],
+  // Wrangler turns workers.dev off by default once `routes` is set; keep it on
+  // as a fallback URL (canonical tags already point to darylalim.com)
+  "workers_dev": true,
   // Required by `wrangler preview` (PR builds); empty because previews need no separate settings
   "previews": {},
 }

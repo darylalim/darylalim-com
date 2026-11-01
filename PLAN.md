@@ -209,6 +209,10 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 5. The `www` redirect (step 3)
 6. Verify: `npm run check:seo -- https://darylalim.com/`, the Rich Results Test, the HTTP→HTTPS and `www` redirects (path and query kept), and a test email to `hello@`
 7. HSTS last, with a short `max-age` (e.g. 300); raise it after a few days with no problems. Browsers cache HSTS, so a mistake can't be undone for visitors who already have it
+
+**Progress:**
+- **2026-11-01, steps 1–3 done** (via the Cloudflare MCP server). Zone settings: Email Address Obfuscation off, Minimum TLS 1.2, Always Use HTTPS on (HSTS still off). Email Routing enabled: Cloudflare added 3 MX records, an SPF TXT and a DKIM TXT (`cf2024-1._domainkey`); the Gmail destination was already verified; rule `hello@darylalim.com` → Gmail. Catch-all left off (drop), so other addresses bounce
+- **Step 4** (`feat/custom-domain`): `routes` plus an explicit `"workers_dev": true`, because Wrangler turns workers.dev off by default once `routes` is set; the workers.dev URL stays as a fallback, and canonicals already point to darylalim.com
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
    - Existing MX records will clash with Email Routing; decide whether anything currently receives mail there
@@ -222,12 +226,12 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 4. Zone settings (current values from the 2026-10-30 check → target):
    | Setting | Now (2026-11-01) | Target | Why |
    | --- | --- | --- | --- |
-   | Email Address Obfuscation | on | **off** | Injects a decode script the CSP blocks, breaking the `hello@` link |
+   | Email Address Obfuscation | on → off (2026-11-01) | **off** | Injects a decode script the CSP blocks, breaking the `hello@` link |
    | Rocket Loader | off | off | Rewrites script loading; already correct |
    | Auto Minify | — | off (if still present) | Can break hydration |
-   | Always Use HTTPS | off | **on** | Redirect all HTTP to HTTPS |
+   | Always Use HTTPS | off → on (2026-11-01) | **on** | Redirect all HTTP to HTTPS |
    | HSTS | off | **on** | Start with a short `max-age`, raise it once everything is confirmed on HTTPS |
-   | Minimum TLS version | 1.0 | **1.2** | TLS 1.0/1.1 are deprecated; no current browser needs them |
+   | Minimum TLS version | 1.0 → 1.2 (2026-11-01) | **1.2** | TLS 1.0/1.1 are deprecated; no current browser needs them |
    | SSL/TLS mode | Full | Full | Fine for Workers custom domains |
    - Changing these needs a Cloudflare MCP session with write access (**[Daryl]** re-authorize with a broader scope than "Read only"), or the dashboard
 5. Email Routing: enable it on the zone, **[Daryl]** verify the destination inbox, and create `hello@darylalim.com` → personal inbox (Cloudflare adds the MX/SPF records)

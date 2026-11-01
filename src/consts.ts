@@ -12,8 +12,8 @@ export const NAV_LINKS = [
 ];
 
 // Profiles get rel="me", which ties them to this site as the same person.
-// Email (hello@darylalim.com) joins once Email Routing is live in Phase 5;
-// until then mail to it would bounce.
+// Email is not a profile, so it stays out of rel="me" and the JSON-LD sameAs.
+// hello@ forwards via Cloudflare Email Routing (receive-only).
 export const FOOTER_LINKS = [
   { href: "https://github.com/darylalim", label: "github", me: true },
   {
@@ -21,6 +21,7 @@ export const FOOTER_LINKS = [
     label: "linkedin",
     me: true,
   },
+  { href: "mailto:hello@darylalim.com", label: "email", me: false },
   { href: "/rss.xml", label: "rss", me: false },
 ];
 
