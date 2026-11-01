@@ -12,7 +12,8 @@
     "astro": "astro",
     "deploy": "astro build && wrangler deploy",
     "format": "prettier --write .",
-    "og": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=3000 --user-data-dir=\"$TMPDIR/og-chrome\" --screenshot=public/og-default.png \"file://$PWD/scripts/og-default.html\""
+    "og": "\"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome\" --headless --disable-gpu --hide-scrollbars --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=3000 --user-data-dir=\"$TMPDIR/og-chrome\" --screenshot=public/og-default.png \"file://$PWD/scripts/og-default.html\"",
+    "check:seo": "node scripts/check-seo.mjs"
   },
   "dependencies": {
     "@astrojs/markdown-satteri": "^0.4.6",
