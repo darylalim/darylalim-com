@@ -45,6 +45,7 @@ Collections are defined in `src/content.config.ts` (schemas in `PLAN.md`).
 ## Git and deploys
 
 - Work on a branch and merge to `main` through a PR. Never push straight to `main`.
+- The "Protect main" ruleset (Settings → Rules) enforces this: changes to `main` need a PR (no approvals, since GitHub doesn't let authors approve their own PRs), merge commits only, and no force-pushes or deletion. It has no bypass actors, so it binds the owner too. Merge with `gh pr merge <n> --merge --delete-branch`; squash and rebase are disabled repo-wide.
 - Workers Builds deploys `main` to production and builds every other branch as a preview; the preview URL is posted on the PR.
 - Build command `npm run build`, deploy command `npx wrangler deploy`, preview command `npx wrangler preview` (the default). `wrangler preview` fails without the `previews` block in `wrangler.jsonc`; keep it, even empty. The Worker name in the dashboard must match `"name"` in `wrangler.jsonc` (`darylalim-com`).
 - Production: https://darylalim.com (custom domain via `routes` in `wrangler.jsonc`). https://darylalim-com.daryl-a-lim.workers.dev stays on as a fallback (`workers_dev: true`; Wrangler would turn it off by default once `routes` is set). Branch previews: `https://<branch-slug>-darylalim-com.daryl-a-lim.workers.dev`.
