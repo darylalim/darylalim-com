@@ -241,7 +241,7 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 6. Rollback: a bad deploy is reverted with `npx wrangler rollback` (or from the Worker's Deployments tab); document this in `CLAUDE.md` (**done**: see "Git and deploys" in `CLAUDE.md`)
 - **Done when:** https://darylalim.com serves the site, `www` redirects with the path preserved, HTTP redirects to HTTPS, and a test email to `hello@` arrives
 
-### Phase 6: Performance & polish
+### Phase 6: Performance & polish ✅
 - `public/_headers`: long cache on `/_astro/*` (hashed assets) and security headers (`X-Content-Type-Options`, `Referrer-Policy`, `Permissions-Policy`, and `Content-Security-Policy: frame-ancestors 'none'`)
   - `frame-ancestors` is ignored in a `<meta>` CSP, so clickjacking protection must be a header. A header containing only `frame-ancestors` doesn't restrict scripts or styles, so it can't conflict with Astro's per-page hashes
 - Content Security Policy via Astro's `security.csp` (emits a per-page `<meta>` with hashes for the scripts and styles Astro processes)
@@ -249,7 +249,10 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
   - Checked in `npm run preview`: headers on pages, `/_astro/*` (incl. fonts) cached immutable, stored theme applies before paint, toggle and resume print button work, style attributes allowed, injected inline `<style>`/`<script>` blocked, no console errors
   - If Cloudflare Web Analytics is enabled later, allow its script origin in `scriptDirective.resources`, or the beacon is silently blocked
 - Use Astro `<Image />` for photos/screenshots (build-time optimization)
+  - **Deferred:** the site has no photos or screenshots yet. Use `<Image />` when the first one is added (e.g. the optional photo)
 - Lighthouse / Core Web Vitals audit; target 95+ in every category
+  - **Done 2026-11-01** on production (Lighthouse CLI, headless Chrome), after the CSP went live (PR #25): home, the first blog post and `/projects/` score **100** in Performance, Accessibility, Best Practices and SEO, on both mobile and desktop. Mobile: LCP 0.8 s, CLS 0, TBT 0 ms; desktop LCP 0.2 s
+  - The only flags are two unscored insights (render-blocking, network dependency tree), both about the single 2.3 KB stylesheet. Left as is: inlining it into every page would save one round trip but lose caching across pages
 - **Done when:** Lighthouse scores meet the target on home, a blog post and the projects page
 
 ## Content
