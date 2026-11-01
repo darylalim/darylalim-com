@@ -34,7 +34,7 @@ Server features (e.g. a contact form) are out of scope for launch. If needed lat
 
 **After launch (backlog):**
 - Detail write-ups for every featured project
-- Per-post OG images generated at build time
+- ~~Per-post OG images generated at build time~~ **Done 2026-11-01** (PR #30): `src/pages/og/[slug].png.ts` renders `/og/<slug>.png` for each published post with satori + resvg (`src/lib/og.ts`), in the dark design of `og-default.png` (Daryl chose it over a light card and a card with the description, on a comparison page); `PostLayout` passes it to `BaseLayout`
 - Site search (e.g. Pagefind)
 - Cloudflare Web Analytics (privacy-friendly, no cookie banner; needs a CSP allowance, see Phase 6)
 - Photo on the home page

@@ -15,7 +15,13 @@ const { title, description, pubDate, updatedDate, tags, draft } = post.data;
 const minutes = readingTime(post.body);
 ---
 
-<BaseLayout title={title} description={description} type="article">
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  image={`/og/${post.id}.png`}
+  imageAlt={`${title}, a post by Daryl Lim`}
+>
   <article>
     <header class="post-header">
       <h1>{title}</h1>
