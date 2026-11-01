@@ -1,0 +1,48 @@
+---
+// TEMPORARY: compare per-post OG card designs. Remove before merging.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { OG_VARIANTS } from "../../lib/og";
+import { getPosts } from "../../lib/posts";
+
+const posts = await getPosts();
+const labels: Record<(typeof OG_VARIANTS)[number], string> = {
+  dark: "A. Dark, title only (matches the default card)",
+  light: "B. Light, title only",
+  description: "C. Dark, title plus description",
+};
+---
+
+<BaseLayout title="OG card comparison" noindex>
+  <h1>Per-post OG cards</h1>
+  <p>
+    Each card shows at 1200×630, scaled to fit. Social sites crop little or
+    nothing at this ratio, so this is close to what a shared link shows.
+  </p>
+  {OG_VARIANTS.map((variant) => (
+    <section>
+      <h2>{labels[variant]}</h2>
+      {posts.map((post) => (
+        <img
+          src={`/og-compare/${variant}/${post.id}.png`}
+          alt={`${labels[variant]}: ${post.data.title}`}
+          width="1200"
+          height="630"
+          loading="lazy"
+        />
+      ))}
+    </section>
+  ))}
+</BaseLayout>
+
+<style>
+  section {
+    margin-top: var(--space-6);
+  }
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: var(--space-4);
+    border: 1px solid var(--color-border);
+  }
+</style>
