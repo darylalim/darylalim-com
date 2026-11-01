@@ -1,13 +1,30 @@
 // Checks a deployed copy of the site: JSON-LD, Open Graph tags, robots.txt,
 // sitemap and RSS. Usage: npm run check:seo -- <base-url>
-// e.g. a branch preview, or https://darylalim.com once the domain is live.
+// <base-url> is a site root (a branch preview or https://darylalim.com/), not a page.
 // Uses Node's fetch, since macOS curl fails the TLS handshake with *.workers.dev.
 // The 404 page isn't checked: previews return a plain "Not found" instead.
-if (!process.argv[2]) {
+const usage = (msg) => {
+  if (msg) console.error(msg);
   console.error("Usage: npm run check:seo -- <base-url>");
   process.exit(2);
+};
+if (!process.argv[2]) usage();
+let given;
+try {
+  given = new URL(process.argv[2]);
+} catch {
+  usage(`Not a URL: ${process.argv[2]}`);
 }
-const base = process.argv[2].replace(/\/+$/, "");
+if (!["http:", "https:"].includes(given.protocol))
+  usage(`Use an http(s) URL, not ${given.protocol}`);
+// Every check is relative to the site root (/, /rss.xml, /sitemap-index.xml),
+// so a page URL would make nearly all of them fail for the wrong reason
+if (given.pathname !== "/" || given.search || given.hash)
+  usage(
+    `Give the site root, not a page: ${process.argv[2]}\n` +
+      `Try: npm run check:seo -- ${given.origin}/`,
+  );
+const base = given.origin;
 // Canonicals, og:url, sitemap and feed links always point at `site`, wherever the copy is served
 const SITE = "https://darylalim.com";
 let failures = 0;

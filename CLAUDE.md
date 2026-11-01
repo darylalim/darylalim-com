@@ -12,7 +12,7 @@ Personal developer-portfolio site: a fully static Astro site served by Cloudflar
 | `npm run deploy`             | Build and `wrangler deploy` (normally Workers Builds deploys instead; see below)                                    |
 | `npm run format`             | Prettier (with `prettier-plugin-astro`); `PLAN.md` is excluded on purpose                                           |
 | `npm run og`                 | Re-render `public/og-default.png` from `scripts/og-default.html` with headless Chrome (macOS path)                  |
-| `npm run check:seo -- <url>` | Check a deployed copy (preview or production): JSON-LD, OG tags, robots.txt, sitemap, RSS                           |
+| `npm run check:seo -- <url>` | Check a deployed copy by its root URL (preview or production): JSON-LD, OG tags, robots.txt, sitemap, RSS           |
 
 Use `npm run preview`, not `astro dev`, to check anything that depends on how Cloudflare serves files: 404 handling, trailing-slash redirects, `_headers`, and the CSP (which is not active in `astro dev`).
 
