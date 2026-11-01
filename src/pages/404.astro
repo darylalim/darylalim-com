@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { NAV_LINKS } from "../consts";
 ---
 
 <BaseLayout
@@ -7,8 +8,41 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   description="This page doesn't exist."
   noindex
 >
+  <p class="code" aria-hidden="true">
+    404
+  </p>
   <h1>Page not found</h1>
   <p>
-    <a href="/">Back to home</a>
+    There's nothing at this address. It may have moved, or the link may have a
+    typo.
   </p>
+  <p>Try one of these instead:</p>
+  <ul class="links">
+    {NAV_LINKS.map(({ href, label }) => (
+      <li>
+        <a href={href}>{label === "home" ? "home page" : label} →</a>
+      </li>
+    ))}
+  </ul>
 </BaseLayout>
+
+<style>
+  .code {
+    margin: var(--space-6) 0 var(--space-2);
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+    color: var(--color-text-muted);
+  }
+  h1 {
+    margin-top: 0;
+  }
+  .links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-5);
+    padding: 0;
+    list-style: none;
+    font-family: var(--font-mono);
+    font-size: var(--font-size-sm);
+  }
+</style>

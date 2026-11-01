@@ -3,7 +3,13 @@ import { getCollection } from "astro:content";
 import PostList from "../components/PostList.astro";
 import TagList from "../components/TagList.astro";
 import BaseLayout from "../layouts/BaseLayout.astro";
-import { PROJECT_THEMES, SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import {
+  FOOTER_LINKS,
+  JOB_TITLE,
+  PROJECT_THEMES,
+  SITE_DESCRIPTION,
+  SITE_TITLE,
+} from "../consts";
 import { getPosts } from "../lib/posts";
 
 // Featured projects in the Projects page's order: by theme, then newest first
@@ -20,9 +26,36 @@ const featured = (
 );
 
 const latestPosts = (await getPosts()).slice(0, 3);
+
+// ProfilePage wrapping a Person: the form Google's Rich Results Test recognises.
+// sameAs reuses the footer's rel="me" profiles, so the two can't drift apart.
+const siteUrl = new URL("/", Astro.site).href;
+const profile = {
+  "@context": "https://schema.org",
+  "@type": "ProfilePage",
+  url: siteUrl,
+  mainEntity: {
+    "@type": "Person",
+    "@id": `${siteUrl}#person`,
+    name: SITE_TITLE,
+    url: siteUrl,
+    jobTitle: JOB_TITLE,
+    description: SITE_DESCRIPTION,
+    address: {
+      "@type": "PostalAddress",
+      addressLocality: "Honolulu",
+      addressRegion: "HI",
+      addressCountry: "US",
+    },
+    sameAs: FOOTER_LINKS.filter((link) => link.me).map((link) => link.href),
+  },
+};
+// Escape "<" so no string in the data can close the <script> early
+const profileJson = JSON.stringify(profile).replaceAll("<", "\\u003c");
 ---
 
 <BaseLayout>
+  <script type="application/ld+json" slot="head" set:html={profileJson} />
   <section class="intro" aria-labelledby="name">
     {/* The "dl" monogram from favicon.svg, in theme colors; a photo may replace it later */}
     <svg
@@ -42,7 +75,7 @@ const latestPosts = (await getPosts()).slice(0, 3);
     <div>
       <h1 id="name">{SITE_TITLE}</h1>
       <p class="lead">{SITE_DESCRIPTION}</p>
-      <p class="role">Independent AI engineer in Honolulu.</p>
+      <p class="role">{JOB_TITLE} in Honolulu.</p>
     </div>
   </section>
 
