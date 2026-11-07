@@ -199,7 +199,7 @@ Steps marked **[Daryl]** need Daryl's accounts or a manual action; everything el
 - **Built 2026-11-01** (`feat/seo`): `ProfilePage` JSON-LD with a `Person` as `mainEntity` on the home page only (Rich Results Test recognises `ProfilePage`, not a bare `Person`), with `sameAs` taken from the footer's `rel="me"` links and a city-level address (Honolulu, no street, per the privacy rules). It goes into a new `head` slot in `BaseLayout`. The 404 page explains itself and links to every nav item; `public/robots.txt` points to `sitemap-index.xml`. The sitemap already leaves out the 404. Validated on the preview: `npm run check:seo` (JSON-LD, OG, robots.txt, sitemap, RSS) passes, and the Rich Results Test finds 1 valid Profile page item. It also reports a crawl error, because Cloudflare adds `X-Robots-Tag: noindex` to every preview; re-run it on https://darylalim.com/ after Phase 5
 - **Done when:** the sitemap, RSS and OG tags validate, and Google's Rich Results Test recognises the `Person` data
 
-### Phase 5: Go live on darylalim.com ← next (only HSTS, step 7, left)
+### Phase 5: Go live on darylalim.com ✅ (raise HSTS `max-age` after a few days)
 The pipeline already works from Phase 1; this phase attaches the domain and hardens the zone.
 
 **Order (decided 2026-11-01):** harden the zone and set up email *before* attaching the domain, so darylalim.com is never live with weak settings. With no DNS records on the zone, the settings and Email Routing have no visible effect until the domain is attached. The numbered steps below are the reference; do them in this order:
@@ -216,7 +216,8 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
 - **Step 4 done 2026-11-01** (PR #23): `routes` plus an explicit `"workers_dev": true`, because Wrangler turns workers.dev off by default once `routes` is set; the workers.dev URL stays as a fallback, and canonicals already point to darylalim.com
 - **Step 5 done 2026-11-01**: proxied `AAAA www → 100::` plus a Single Redirect rule (`http.host eq "www.darylalim.com"` → `concat("https://darylalim.com", http.request.uri.path)`, 301, query string kept)
 - **Step 6 done 2026-11-01**, except the **[Daryl]** checks: `npm run check:seo -- https://darylalim.com/` passes; HTTP→HTTPS and `www` → apex return 301 in one hop with path and query kept; production sends no `X-Robots-Tag: noindex`; the test email to `hello@` arrived; workers.dev still serves the site. Rich Results Test on https://darylalim.com/ passed (1 valid Profile page, 0 errors, 0 warnings, indexing allowed). Search Console verified and the sitemap submitted (Phase 4)
-- **Step 7** (HSTS): not before 2026-11-04, so problems from the domain switch show up before browsers cache HSTS
+- **Step 7 done 2026-11-07** (HSTS, via the Cloudflare MCP server): `max-age=300`, `includeSubDomains` off, preload off, nosniff on. Pre-flight checks passed first (the 2026-11-04 cloud routine couldn't reach the site from its sandbox, so they were run locally): 200 home with the `hello@` link and no `noindex`, HTTP→HTTPS and `www` → apex 301 with path and query kept, 404 for unknown URLs, `check:seo` passes. Production now sends `Strict-Transport-Security: max-age=300` on HTTPS responses (not on the HTTP redirect, which browsers would ignore anyway); workers.dev doesn't send it, as it's not on the zone
+- **Next:** after a few days with no problems, raise `max-age` to 31536000 (1 year). Consider `includeSubDomains` and preload only after that, since preload takes months to undo
 1. Pre-flight DNS check on the `darylalim.com` zone:
    - Existing A/AAAA/CNAME records on `darylalim.com` will block attaching the Worker custom domain; remove or replace them
    - Existing MX records will clash with Email Routing; decide whether anything currently receives mail there
@@ -234,7 +235,7 @@ The pipeline already works from Phase 1; this phase attaches the domain and hard
    | Rocket Loader | off | off | Rewrites script loading; already correct |
    | Auto Minify | — | off (if still present) | Can break hydration |
    | Always Use HTTPS | off → on (2026-11-01) | **on** | Redirect all HTTP to HTTPS |
-   | HSTS | off | **on** | Start with a short `max-age`, raise it once everything is confirmed on HTTPS |
+   | HSTS | off → on, `max-age=300` (2026-11-07) | **on** | Start with a short `max-age`, raise it once everything is confirmed on HTTPS |
    | Minimum TLS version | 1.0 → 1.2 (2026-11-01) | **1.2** | TLS 1.0/1.1 are deprecated; no current browser needs them |
    | SSL/TLS mode | Full | Full | Fine for Workers custom domains |
    - Changing these needs a Cloudflare MCP session with write access (**[Daryl]** re-authorize with a broader scope than "Read only"), or the dashboard
